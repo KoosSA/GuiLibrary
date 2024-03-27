@@ -2,6 +2,8 @@ package koossa.guilib;
 
 import com.koossa.logger.Log;
 
+import koossa.guilib.text.TextManager;
+
 public class Gui extends Thread {
 	
 	private static boolean running = false;
@@ -11,16 +13,14 @@ public class Gui extends Thread {
 	public static void init() {
 		Gui gui = new Gui();
 		gui.setName("guiLibrary");
+		TextManager.init();
 		gui.start();
 	}
 	
 	public static float stopGui() {
 		running = false;
+		TextManager.dispose();
 		return trueDeltaTime;
-	}
-	
-	public Gui() {
-		
 	}
 	
 	@Override
@@ -34,6 +34,7 @@ public class Gui extends Thread {
 	
 	private void dispose() {
 		Log.debug(this, "Disposing gui library");
+		
 		running = false;
 	}
 

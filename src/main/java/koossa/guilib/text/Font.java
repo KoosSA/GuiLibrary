@@ -14,6 +14,7 @@ public class Font {
 	
 	private Map<Integer, Glyph> glyphs;
 	private int textureId;
+	private static final Glyph DEFAULT_GLYPH = new Glyph(0, 0, 0, 0, 0, 0, 0);
 	
 	public Font(String fontName) {
 		glyphs = new HashMap<Integer, Glyph>();
@@ -27,7 +28,18 @@ public class Font {
 			Log.error(this, "File not found in internal system: " + fontName);
 			e.printStackTrace();
 		}
-		System.out.println(glyphs);
+	}
+	
+	public Map<Integer, Glyph> getGlyphs() {
+		return glyphs;
+	}
+	
+	public int getTextureId() {
+		return textureId;
+	}
+	
+	public Glyph getGlyph(int id) {
+		return glyphs.getOrDefault(id, DEFAULT_GLYPH);
 	}
 
 	private void parseLine(String line) {
@@ -51,7 +63,7 @@ public class Font {
 			for (int i = 1; i < 9; i++) {
 				val[i-1] = Integer.parseInt(arr[i].split("=")[1]);
 			}
-			Glyph glyph = new Glyph(val[1], val[2], val[3], val[4], val[5], val[6], val[7]);
+			Glyph glyph = new Glyph(val[1], val[2], val[3], val[4], val[7], val[5], val[6]);
 			glyphs.put(val[0], glyph);
 		}
 	}
