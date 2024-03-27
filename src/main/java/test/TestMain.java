@@ -27,8 +27,8 @@ public class TestMain {
 		GLFW.glfwShowWindow(winId);
 		
 		Gui.init();
-		TextManager.addTextToRender(new Text("TesT", new Font("arial.fnt")));
-
+		TextManager.addTextToRender(new Text("Test this font.", new Font("arial.fnt")));
+ 
 		startLoop();
 		
 		
