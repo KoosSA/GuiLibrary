@@ -6,13 +6,15 @@ out vec4 colour;
 
 uniform sampler2D tex;
 
+uniform vec4 uni_colour;
+
 void main() {
 
 	vec4 col = texture(tex, passTexCoord);
-	if (col.a < 0.2f) {
+	if (col.a < 0.15f) {
 		discard;
 	}
 	
-	colour = col;
+	colour = vec4(uni_colour.rgb, col.a);
 
 }

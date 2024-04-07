@@ -130,8 +130,12 @@ public class TextShader {
 	}
 
 	private int projection_loc;
+	private int transformation_loc;
+	private int uni_colour_loc;
 	protected void getUniformLocations() {
 		projection_loc = GL30.glGetUniformLocation(programId, "projection");
+		transformation_loc = GL30.glGetUniformLocation(programId, "transformation");
+		uni_colour_loc = GL30.glGetUniformLocation(programId, "uni_colour");
 	}
 	
 	private FloatBuffer matrix4fBuffer = BufferUtils.createFloatBuffer(16);
@@ -142,6 +146,14 @@ public class TextShader {
 
 	public void loadProjection(Matrix4f projectionMat) {
 		loadMat4f(projectionMat, projection_loc);
+	}
+	
+	public void loadTransformation(Matrix4f transformationMatrix) {
+		loadMat4f(transformationMatrix, transformation_loc);
+	}
+	
+	public void loadColour(Vector4f colour) {
+		loadVec4f(colour, uni_colour_loc);
 	}
 
 }

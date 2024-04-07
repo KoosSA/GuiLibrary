@@ -28,7 +28,7 @@ public class TextManager {
 		GL30.glEnableVertexAttribArray(1);
 		shader = new TextShader();
 		projectionMat = new Matrix4f();
-		projectionMat.ortho2D(0, 800, 0, 600);
+		projectionMat.ortho2D(0, 800, -600, 0);
 		shader.start();
 		shader.loadProjection(projectionMat);
 		shader.stop();
@@ -38,23 +38,32 @@ public class TextManager {
 		torender.add(text);
 	}
 	
+	public static void onResize(int width, int height) {
+		projectionMat.identity();
+		projectionMat.ortho2D(0, width, -height, 0);
+		shader.start();
+		shader.loadProjection(projectionMat);
+		shader.stop();
+	}
+	
 	private static int prepareRenderData() {
 		
-		float[] v = torender.get(0).getVertices();
-		float[] t = torender.get(0).getTexCoords();
-		if (v == null || t == null) return 0;
+		float[] vertices = torender.get(0).getVertices();
+		float[] textureCoords = torender.get(0).getTexCoords();
+		
+		if (vertices == null || textureCoords == null) return 0;
 		
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
-		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, v, GL30.GL_DYNAMIC_DRAW);
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertices, GL30.GL_DYNAMIC_DRAW);
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbot);
-		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, t, GL30.GL_DYNAMIC_DRAW);
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, textureCoords, GL30.GL_DYNAMIC_DRAW);
 		
 		
 		GL30.glEnable(GL30.GL_BLEND);
 		GL30.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
 		
 		GL30.glEnable(GL30.GL_DEPTH_TEST);
-		return v.length / 2;
+		return vertices.length / 2;
 	}
 	
 	public static void render() {
@@ -62,14 +71,13 @@ public class TextManager {
 		GL30.glBindVertexArray(vao);
 		int size = prepareRenderData();
 		
-		GL30.glActiveTexture(GL30.GL_TEXTURE0);
-		GL30.glBindTexture(GL30.GL_TEXTURE_2D, torender.get(0).font.getTextureId());
+		shader.loadTransformation(torender.get(0).getTransformationMatrix());
+		shader.loadColour(torender.get(0).getColour());
+		
 		GL30.glDrawArrays(GL30.GL_TRIANGLES, 0, size);
 		
 		GL30.glBindVertexArray(0);
 		shader.stop();
-		
-		
 	}
 	
 	public static void dispose() {
