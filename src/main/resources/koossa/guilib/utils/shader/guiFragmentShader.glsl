@@ -1,6 +1,7 @@
 #version 330
 
-//in vec2 passTexCoord;
+in vec2 passTexCoord;
+in vec4 passColour;
 
 out vec4 colour;
 
@@ -8,6 +9,6 @@ out vec4 colour;
 
 void main() {
 	
-	colour = vec4(1,1,1,1);
+	colour = passColour;
 
 }

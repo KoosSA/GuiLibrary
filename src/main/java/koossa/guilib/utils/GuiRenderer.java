@@ -1,20 +1,15 @@
 package koossa.guilib.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL30;
 
 import koossa.guilib.Gui;
-import koossa.guilib.elements.Element;
 import koossa.guilib.utils.shader.GuiShader;
 
 public class GuiRenderer {
 	
 	private Matrix4f projectionMatrix = new Matrix4f();
 	private GuiShader shader;
-	private List<float[]> torender_Verts;
 	private static int vao, vbo, vbot, vboc;
 	private GuiManager guiManager;
 	
@@ -33,25 +28,22 @@ public class GuiRenderer {
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbot);
 		GL30.glVertexAttribPointer(1, 2, GL30.GL_FLOAT, false, 0, 0);
 		GL30.glEnableVertexAttribArray(1);
-//		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vboc);
-//		GL30.glVertexAttribPointer(2, 4, GL30.GL_FLOAT, false, 0, 0);
-//		GL30.glEnableVertexAttribArray(2);
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vboc);
+		GL30.glVertexAttribPointer(2, 4, GL30.GL_FLOAT, false, 0, 0);
+		GL30.glEnableVertexAttribArray(2);
 		
 		updateProjection((int) Gui.getScreenWidth(), (int) Gui.getScreenHeight());
 	}
 	
-	private int prepare(float[] vertices) {
-//		if (vertices == null || textureCoords == null || colours == null) return 0;
-		
+	private int prepare(float[] vertices, float[] texCoords, float[] colours) {
+		if (vertices == null || texCoords == null || colours == null) return 0;
 		
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
 		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, vertices, GL30.GL_DYNAMIC_DRAW);
-//		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbot);
-//		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, textureCoords, GL30.GL_DYNAMIC_DRAW);
-//		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vboc);
-//		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, colours, GL30.GL_DYNAMIC_DRAW);
-//		
-		
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbot);
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, texCoords, GL30.GL_DYNAMIC_DRAW);
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vboc);
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, colours, GL30.GL_DYNAMIC_DRAW);	
 		
 		return vertices.length / 2;
 	}
@@ -62,10 +54,13 @@ public class GuiRenderer {
 		GL30.glDisable(GL30.GL_DEPTH_TEST);
 		shader.start();
 		GL30.glBindVertexArray(vao);
-		guiManager.getVerticesToRender().forEach(root -> {
-			int count = prepare(root);
+		for (int i = 0; i < guiManager.getVerticesToRender().size(); i++) {
+			float[] verts = guiManager.getVerticesToRender().get(i);
+			float[] coords = guiManager.getTextureCoordsToRender().get(i);
+			float[] colours = guiManager.getColoursToRender().get(i);
+			int count = prepare(verts, coords, colours);
 			GL30.glDrawArrays(GL30.GL_TRIANGLES, 0, count);
-		});
+		}
 		GL30.glBindVertexArray(0);
 		shader.stop();
 	}

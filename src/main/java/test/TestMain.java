@@ -30,10 +30,15 @@ public class TestMain {
 		
 		Gui.init(800, 600);
 		TextManager.addTextToRender(new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", new Font("a.fnt"), 0, 0, 250,0,0.5f).setColour(0,0,0,1));
-		Gui.addGui("TestPanel", new Panel(0f, 0f, 0.2f, 0.2f, true));
+		Panel root = new Panel(0.25f, 0.25f, 0.5f, 0.5f, true);
+		Panel c1 = new Panel(0.5f, 0.5f, 0.5f, 0.5f, true).setColour(1, 0, 0, 0);
+		Panel c2 = new Panel(0.5f, 0.5f, 0.5f, 0.5f, true).setColour(0, 1, 0, 1);
+		root.addChild(c1);
+		c1.addChild(c2);
+		Gui.addGui("TestPanel", root);
 		Gui.showGui("TestPanel");
-		Gui.addGui("TestPanel2", new Panel(0.3f, 0.3f, 0.2f, 0.2f, true));
-		Gui.showGui("TestPanel2");
+//		Gui.addGui("TestPanel2", new Panel(0.3f, 0.3f, 0.2f, 0.2f, true));
+//		Gui.showGui("TestPanel2");
 		
 		GLFW.glfwSetWindowSizeCallback(winId, new GLFWWindowSizeCallbackI() {
 			

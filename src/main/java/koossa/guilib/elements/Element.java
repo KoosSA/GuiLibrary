@@ -9,7 +9,7 @@ import koossa.guilib.Gui;
 import koossa.guilib.utils.Bounds;
 
 public abstract class Element {
-	
+
 	protected Element parent = null;
 	protected List<Element> children = new ArrayList<Element>();
 	protected boolean visible = true;
@@ -18,7 +18,7 @@ public abstract class Element {
 	protected Bounds bounds = new Bounds(0, 0, 100, 100);
 	protected Vector4f backgroundColour = new Vector4f(0.8f, 0.8f, 0.8f, 1);
 	private float[] ogData = new float[5];
-	
+
 	public Element(float posX, float posY, float width, float height, boolean isRatioValues) {
 		onLayout(posX, -posY, width, height, isRatioValues);
 		ogData[0] = posX;
@@ -27,7 +27,18 @@ public abstract class Element {
 		ogData[3] = height;
 		ogData[4] = isRatioValues ? 1 : 0;
 	}
-	
+
+	public void addChild(Element child) {
+		children.add(child);
+		child.parent = this;
+		autoLayout();
+	}
+
+	public <T extends Element> T setColour(float r, float g, float b, float a) {
+		backgroundColour.set(r, g, b, a);
+		return (T) this;
+	}
+
 	private void onLayout(float posX, float posY, float width, float height, boolean isRatioValues) {
 		if (!isRatioValues) {
 			bounds.setHeight(height);
@@ -43,17 +54,17 @@ public abstract class Element {
 			} else {
 				bounds.setHeight(parent.bounds.getHeight() * height);
 				bounds.setWidth(parent.bounds.getWidth() * width);
-				bounds.setX(parent.bounds.getX() * posX);
-				bounds.setY(parent.bounds.getY() * posY);
+				bounds.setX(parent.bounds.getX() + parent.bounds.getWidth() * posX);
+				bounds.setY(parent.bounds.getY() + parent.bounds.getHeight() * posY);
 			}
 		}
 		bounds.calculateVertices();
 	}
-	
+
 	public Bounds getBounds() {
 		return bounds;
 	}
-	
+
 	public Vector4f getBackgroundColour() {
 		return backgroundColour;
 	}
@@ -64,6 +75,18 @@ public abstract class Element {
 		}
 		children.forEach(child -> {
 			child.addVertices(verts);
+		});
+	}
+
+	public void addColour(List<Float> colourDataList) {
+		for (int i = 0; i < 6; i++) {
+			colourDataList.add(backgroundColour.x());
+			colourDataList.add(backgroundColour.y());
+			colourDataList.add(backgroundColour.z());
+			colourDataList.add(backgroundColour.w());
+		}
+		children.forEach(child -> {
+			child.addColour(colourDataList);
 		});
 	}
 
