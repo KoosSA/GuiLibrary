@@ -1,12 +1,14 @@
 package test;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL30;
 
 import com.koossa.logger.Log;
 
 import koossa.guilib.Gui;
+import koossa.guilib.elements.Panel;
 import koossa.guilib.text.Font;
 import koossa.guilib.text.Text;
 import koossa.guilib.text.TextManager;
@@ -26,9 +28,22 @@ public class TestMain {
 		
 		GLFW.glfwShowWindow(winId);
 		
-		Gui.init();
-		TextManager.addTextToRender(new Text("Test this font.", new Font("arial.fnt")));
- 
+		Gui.init(800, 600);
+		TextManager.addTextToRender(new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", new Font("a.fnt"), 0, 0, 250,0,0.5f).setColour(0,0,0,1));
+		Gui.addGui("TestPanel", new Panel(0f, 0f, 0.2f, 0.2f, true));
+		Gui.showGui("TestPanel");
+		Gui.addGui("TestPanel2", new Panel(0.3f, 0.3f, 0.2f, 0.2f, true));
+		Gui.showGui("TestPanel2");
+		
+		GLFW.glfwSetWindowSizeCallback(winId, new GLFWWindowSizeCallbackI() {
+			
+			@Override
+			public void invoke(long window, int width, int height) {
+				GL30.glViewport(0, 0, width, height);
+				Gui.resize(width, height);
+			}
+		});
+		
 		startLoop();
 		
 		
@@ -39,7 +54,7 @@ public class TestMain {
 		GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
 		GL30.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		
-		TextManager.render();
+		Gui.render();
 	}
 	
 	private static void startLoop() {
@@ -63,7 +78,7 @@ public class TestMain {
 				}
 			}
 		}
-		Gui.stopGui();
+		Gui.dispose();
 	}
 
 	

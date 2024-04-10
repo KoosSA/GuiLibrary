@@ -2,60 +2,65 @@ package koossa.guilib;
 
 import com.koossa.logger.Log;
 
+import koossa.guilib.elements.Element;
 import koossa.guilib.text.TextManager;
+import koossa.guilib.utils.GuiManager;
+import koossa.guilib.utils.GuiRenderer;
 
-public class Gui extends Thread {
+public class Gui {
 	
-	private static boolean running = false;
-	private static float updatesPerSecond = 30.000f;
-	private static float trueDeltaTime = 0;
+	private static float screenWidth, screenHeight;
+	private static GuiManager guiManager;
+	private static GuiRenderer guiRenderer;
 	
-	public static void init() {
-		Gui gui = new Gui();
-		gui.setName("guiLibrary");
+	public static void init(float screenWidth, float screenHeight) {
+		Gui.screenHeight = screenHeight;
+		Gui.screenWidth = screenWidth;
+		guiManager = new GuiManager();
+		guiRenderer = new GuiRenderer(guiManager);
 		TextManager.init();
-		gui.start();
 	}
 	
-	public static float stopGui() {
-		running = false;
+	public static void dispose() {
 		TextManager.dispose();
-		return trueDeltaTime;
+		Log.debug(Gui.class, "Disposing gui library");
 	}
 	
-	@Override
-	public void run() {
-		Log.debug(this, "Starting gui library");
-		running = true;
-		startLoop();
-		dispose();
-		Log.debug(this, "Gui library stopped");
+	public static void resize(int width, int height) {
+		Gui.screenHeight = (float) height;
+		Gui.screenWidth = (float) width;
+		TextManager.onResize(width, height);
+		guiRenderer.resize(width, height);
+		guiManager.resize(width, height);
 	}
 	
-	private void dispose() {
-		Log.debug(this, "Disposing gui library");
-		
-		running = false;
+	public static void render() {
+		guiRenderer.render();
+		TextManager.render();
 	}
-
-	private void startLoop() {
-		long prevTime = System.nanoTime();
-		float targetTime = 1.000f / updatesPerSecond;
-		float deltaTime = 0;
-		while (running) {
-			deltaTime = (float) (System.nanoTime() - prevTime) / 1000000000.00000f;
-			if (deltaTime >= targetTime) {
-				trueDeltaTime = deltaTime;
-				prevTime = System.nanoTime();
-			} else {
-				try {
-					Thread.sleep((long) ((targetTime - deltaTime) * 1000));
-				} catch (InterruptedException e) {
-					Log.error(this, "Thread failed to sleep.");
-					e.printStackTrace();
-				}
-			}
-		}
+	
+	public static float getScreenHeight() {
+		return screenHeight;
+	}
+	
+	public static float getScreenWidth() {
+		return screenWidth;
+	}
+	
+	public static void showGui(String id) {
+		guiManager.show(id);
+	}
+	
+	public static void hideGui(String id) {
+		guiManager.hide(id);
+	}
+	
+	public static void hideAllGui() {
+		guiManager.hideAll();
+	}
+	
+	public static void addGui(String id, Element rootElement) {
+		guiManager.addGui(id, rootElement);
 	}
 
 }
