@@ -62,5 +62,9 @@ public class Gui {
 	public static void addGui(String id, Element rootElement) {
 		guiManager.addGui(id, rootElement);
 	}
+	
+	public static void update(float delta) {
+		guiManager.update(delta);
+	}
 
 }

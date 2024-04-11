@@ -20,6 +20,7 @@ public class GuiManager {
 	private List<float[]> textureCoordsToRender = new ArrayList<float[]>();
 	private List<List<Float>> guiColours = new ArrayList<List<Float>>();
 	private List<float[]> coloursToRender = new ArrayList<float[]>();
+	public static boolean dirty = false;
 
 	public void addGui(String id, Element rootElement) {
 		rootElements.putIfAbsent(id, rootElement);
@@ -47,6 +48,13 @@ public class GuiManager {
 	public void hideAll() {
 		shownElements.clear();
 		updateRenderData();
+	}
+	
+	public void update(float delta) {
+		if (dirty) {
+			updateRenderData();
+		}
+		shownElements.forEach((id, elem) -> elem.update(delta));
 	}
 
 	protected List<float[]> getVerticesToRender() {
@@ -101,6 +109,7 @@ public class GuiManager {
 			float[] colArr = ArrayUtils.toPrimitive(col.toArray(new Float[0]));
 			coloursToRender.add(colArr);
 		});
+		dirty = false;
 	}
 
 	public void resize(int width, int height) {

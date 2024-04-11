@@ -7,18 +7,24 @@ import org.joml.Vector4f;
 
 import koossa.guilib.Gui;
 import koossa.guilib.utils.Bounds;
+import koossa.guilib.utils.GuiManager;
+import koossa.guilib.utils.IGuiEvent;
+import koossa.inputlib.IInputHandler;
+import koossa.inputlib.Input;
+import koossa.inputlib.InputManager;
 
-public abstract class Element {
+public abstract class Element implements IInputHandler {
 
 	protected Element parent = null;
 	protected List<Element> children = new ArrayList<Element>();
 	protected boolean visible = true;
-	protected boolean receiveMouseInput = false;
-	protected boolean reseiveKeyboardInput = false;
+	protected boolean receiveInput = false;
 	protected Bounds bounds = new Bounds(0, 0, 100, 100);
 	protected Vector4f backgroundColour = new Vector4f(0.8f, 0.8f, 0.8f, 1);
 	private float[] ogData = new float[5];
-
+	private IGuiEvent onHoverStart, onHoverStop, onClickEvent;
+	private boolean hovering = false;
+	
 	public Element(float posX, float posY, float width, float height, boolean isRatioValues) {
 		onLayout(posX, -posY, width, height, isRatioValues);
 		ogData[0] = posX;
@@ -36,6 +42,7 @@ public abstract class Element {
 
 	public <T extends Element> T setColour(float r, float g, float b, float a) {
 		backgroundColour.set(r, g, b, a);
+		GuiManager.dirty = true;
 		return (T) this;
 	}
 
@@ -93,5 +100,53 @@ public abstract class Element {
 	public void autoLayout() {
 		onLayout(ogData[0], ogData[1], ogData[2], ogData[3], (ogData[4] == 1));
 		children.forEach(child -> child.autoLayout());
+	}
+	
+	public void update(float delta) {
+		
+		children.forEach(child -> child.update(delta));
+	}
+	
+	public void setOnHoverStart(IGuiEvent onHoverEvent) {
+		this.onHoverStart = onHoverEvent;
+	}
+	
+	public void setOnHoverStop(IGuiEvent onHoverStop) {
+		this.onHoverStop = onHoverStop;
+	}
+	
+	public void setOnClickEvent(IGuiEvent onClickEvent) {
+		this.onClickEvent = onClickEvent;
+	}
+	
+	public void setReceiveInput(boolean receiveInput) {
+		this.receiveInput = receiveInput;
+		if (receiveInput) {
+			Input.registerInputHandler("GUI_INPUT", this);
+		}
+	}
+	
+	@Override
+	public void handleInput(InputManager input) {
+		if (!receiveInput) 
+			return;
+		checkHover(input);
+		if (hovering && input.isFunctionMouseButtonJustPressed("CLICK_PRIMARY") && onClickEvent != null) {
+			onClickEvent.handle();
+		}
+	}
+
+	private void checkHover(InputManager input) {
+		if (input.getCurrentMouseX() > bounds.getX() && input.getCurrentMouseX() < (bounds.getX() + bounds.getWidth()) && -input.getCurrentMouseY() < bounds.getY() && -input.getCurrentMouseY() > (bounds.getY() - bounds.getHeight())) {
+			if (onHoverStart != null && !hovering) {
+				hovering = true;
+				onHoverStart.handle();
+			}
+		} else {
+			if (hovering && onHoverStop != null) {
+				hovering = false;
+				onHoverStop.handle();
+			}
+		}
 	}
 }

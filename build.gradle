@@ -15,6 +15,7 @@ project.ext {
 	filesystem = "latest.release"
 	savesystem = "latest.release"
 	inputlib = "latest.release"
+	loglib = "latest.release"
 }
 
 repositories {
@@ -48,7 +49,8 @@ dependencies {
 
 	implementation "github.koossa:filesystem:$filesystem"
 	implementation "github.koossa:savesystem:$savesystem"
-	implementation "github.koossa:inputlibrary:$inputlib"
+	implementation "github.koossa:logger:$loglib"
+	//implementation "github.koossa:inputlibrary:$inputlib"
 }
 
 java {
