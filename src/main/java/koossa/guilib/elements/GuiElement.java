@@ -8,6 +8,7 @@ import org.joml.Vector4f;
 
 import koossa.guilib.Gui;
 import koossa.guilib.layout.ILayout;
+import koossa.guilib.layout.SizeFormat;
 
 public class GuiElement {
 	
@@ -18,21 +19,25 @@ public class GuiElement {
 	private List<GuiElement> children = new ArrayList<GuiElement>();
 	private Vector4f backgroundColor;
 	private int padding = 0, spacing = 0;
+	private SizeFormat sizeFormat = SizeFormat.RELATIVE;
 	
-	public GuiElement(float width, float height, ILayout layout) {
+	public GuiElement(SizeFormat sizeFormat, float width, float height, ILayout layout) {
 		this.layout = layout;
+		this.sizeFormat = sizeFormat;
 		this.relativeHeight = Math.clamp(0, 1, height);
 		this.relativeWidth = Math.clamp(0, 1, width);
-		this.width = (int) (Gui.getScreenWidth() * relativeWidth);
-		this.height = (int) (Gui.getScreenHeight() * relativeHeight);
+		this.width = (int) ((sizeFormat == SizeFormat.RELATIVE) ? (Gui.getScreenWidth() * relativeWidth) : width);
+		this.height = (int) ((sizeFormat == SizeFormat.RELATIVE) ? (Gui.getScreenHeight() * relativeHeight) : height);
 		this.backgroundColor = new Vector4f(1);
 	}
 	
 	public void addChild(GuiElement child) {
 		child.setParent(this);
 		children.add(child);
-		child.width = (int) (width * child.relativeWidth);
-		child.height = (int) (height * child.relativeHeight);
+		child.width = (int) ((child.sizeFormat == SizeFormat.RELATIVE) ? (width * child.relativeWidth) : child.width);
+		child.height = (int) ((child.sizeFormat == SizeFormat.RELATIVE) ? (height * child.relativeHeight) : child.height);
+//		child.width = (int) (width * child.relativeWidth);
+//		child.height = (int) (height * child.relativeHeight);
 		layout.applyLayout(this, children);
 	}
 	
@@ -42,12 +47,19 @@ public class GuiElement {
 	
 	public void onResize() {
 		if (parent == null)	{
-			this.width = (int) (Gui.getScreenWidth() * relativeWidth);
-			this.height = (int) (Gui.getScreenHeight() * relativeHeight);
+			this.width = (int) ((sizeFormat == SizeFormat.RELATIVE) ? (Gui.getScreenWidth() * relativeWidth) : width);
+			this.height = (int) ((sizeFormat == SizeFormat.RELATIVE) ? (Gui.getScreenHeight() * relativeHeight) : height);
 		} else {
-			this.width = (int) (parent.getWidth() * relativeWidth);
-			this.height = (int) (parent.getHeight() * relativeHeight);
+			this.width = (int) ((sizeFormat == SizeFormat.RELATIVE) ? (parent.getWidth() * relativeWidth) : width);
+			this.height = (int) ((sizeFormat == SizeFormat.RELATIVE) ? (parent.getHeight() * relativeHeight) : height);
 		}
+//		if (parent == null)	{
+//			this.width = (int) (Gui.getScreenWidth() * relativeWidth);
+//			this.height = (int) (Gui.getScreenHeight() * relativeHeight);
+//		} else {
+//			this.width = (int) (parent.getWidth() * relativeWidth);
+//			this.height = (int) (parent.getHeight() * relativeHeight);
+//		}
 		children.forEach(c -> c.onResize());
 		layout.applyLayout(this, children);
 	}

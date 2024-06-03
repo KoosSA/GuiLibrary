@@ -48,8 +48,12 @@ public class Gui {
 		guiManager.show(id);
 	}
 	
-	public static void hideGui(String id) {
-		guiManager.hide(id);
+	public static int hideGui(String id) {
+		return guiManager.hide(id);
+	}
+	
+	public static int toggleGui(String id) {
+		return guiManager.toggleGui(id);
 	}
 	
 	public static void hideAllGui() {
@@ -63,5 +67,7 @@ public class Gui {
 	public static void update(float delta) {
 		guiManager.update(delta);
 	}
+
+	
 
 }

@@ -47,12 +47,22 @@ public class GuiManager {
 		visibleGuis.putIfAbsent(id, element);
 	}
 
-	public void hide(String id) {
+	public int hide(String id) {
 		visibleGuis.remove(id);
+		return visibleGuis.size();
 	}
 
 	public void hideAll() {
 		visibleGuis.clear();
+	}
+
+	public int toggleGui(String id) {
+		if (visibleGuis.containsKey(id)) {
+			hide(id);
+		} else {
+			show(id);
+		}
+		return visibleGuis.size();
 	}
 	
 	
