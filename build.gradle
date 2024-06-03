@@ -50,7 +50,7 @@ dependencies {
 	implementation "github.koossa:filesystem:$filesystem"
 	implementation "github.koossa:savesystem:$savesystem"
 	implementation "github.koossa:logger:$loglib"
-	//implementation "github.koossa:inputlibrary:$inputlib"
+	implementation "github.koossa:inputlibrary:$inputlib"
 }
 
 java {

@@ -1,4 +1,4 @@
-package koossa.guilib.utils.shader;
+package koossa.guilib.rendering.shader;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

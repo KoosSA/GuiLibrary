@@ -1,6 +1,5 @@
 package test;
 
-import org.joml.Random;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
@@ -16,11 +15,11 @@ import com.koossa.logger.Log;
 import com.koossa.savelib.SaveSystem;
 
 import koossa.guilib.Gui;
-import koossa.guilib.elements.Panel;
+import koossa.guilib.elements.GuiElement;
+import koossa.guilib.layout.FlowLayout;
 import koossa.guilib.text.Font;
 import koossa.guilib.text.Text;
 import koossa.guilib.text.TextManager;
-import koossa.guilib.utils.IGuiEvent;
 import koossa.inputlib.Input;
 
 public class TestMain {
@@ -43,6 +42,8 @@ public class TestMain {
 		Input.init(30);
 		Input.registerNewInputManger("GUI_INPUT");
 		Input.activateInputManager("GUI_INPUT");
+		
+		
 		Input.setKeyBinding("OPEN_INVENTORY", GLFW.GLFW_KEY_I);
 		Input.setMouseBinding("CLICK_PRIMARY", GLFW.GLFW_MOUSE_BUTTON_1);
 		
@@ -76,33 +77,32 @@ public class TestMain {
 		
 		Gui.init(800, 600);
 		TextManager.addTextToRender(new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", new Font("a.fnt"), 0, 0, 250,0,0.5f).setColour(0,0,0,1));
-		Panel root = new Panel(200f, 150f, 300f, 300f, false);
-		Panel c1 = new Panel(0.5f, 0.5f, 0.5f, 0.5f, true).setColour(1, 0, 0, 1);
-		Panel c2 = new Panel(0.5f, 0.5f, 0.5f, 0.5f, true).setColour(0, 1, 0, 1);
-		root.setReceiveInput(true);
-		root.setOnHoverStart(new IGuiEvent() {
-			@Override
-			public void handle() {
-				root.setColour(0, 0, 1, 1);
-			}
-		});
-		root.setOnHoverStop(new IGuiEvent() {
-			@Override
-			public void handle() {
-				root.setColour(1, 1, 1, 1);
-			}
-		});
-		Random r = new Random();
-		root.setOnClickEvent(new IGuiEvent() {
-			@Override
-			public void handle() {
-				c1.setColour(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1);
-			}
-		});
 		
-		root.addChild(c1);
-		c1.addChild(c2);
-		Gui.addGui("TestPanel", root);
+		
+		GuiElement base = new GuiElement(0.5f, 0.5f, new FlowLayout());
+		GuiElement c1 = new GuiElement(0.4f, 0.4f, new FlowLayout());
+		c1.setBackgroundColor(0, 1, 0, 1);
+		base.addChild(c1);
+		base.setBackgroundColor(1,0,0,1);
+		GuiElement c2 = new GuiElement(0.4f, 0.4f, new FlowLayout());
+		c2.setBackgroundColor(0, 0, 1, 1);
+		base.addChild(c2);
+		GuiElement c3 = new GuiElement(0.4f, 0.4f, new FlowLayout());
+		c3.setBackgroundColor(0.5f, 0.5f, 0, 1);
+		base.addChild(c3);
+		base.setPadding(10);
+		base.setSpacing(10);
+		
+		GuiElement c11 = new GuiElement(0.4f, 0.4f, new FlowLayout());
+		c1.addChild(c11);
+		GuiElement c12 = new GuiElement(0.4f, 0.4f, new FlowLayout());
+		c1.addChild(c12);
+		c12.setBackgroundColor(0, 0, 0, 1);
+		c1.setPadding(10);
+		c1.setSpacing(10);
+		
+		
+		Gui.addGui("TestPanel", base);
 		Gui.showGui("TestPanel");
 //		Gui.addGui("TestPanel2", new Panel(0.3f, 0.3f, 0.2f, 0.2f, true));
 //		Gui.showGui("TestPanel2");
