@@ -89,7 +89,7 @@ public class TestMain {
 		};
 		Input.registerInputHandler("GUI_INPUT", ih);
 
-		GuiElement base = new GuiElement(SizeFormat.ABSOLUTE, 240, 240, new FlowLayout());
+		GuiElement base = new GuiElement(SizeFormat.ABSOLUTE, 230, 230, new FlowLayout());
 		
 		GuiElement c1 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
 		c1.setBackgroundColor(0, 1, 0, 1);
@@ -98,8 +98,8 @@ public class TestMain {
 		GuiElement c2 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
 		c2.setBackgroundColor(0, 0, 1, 1);
 		base.addChild(c2);
-		GuiElement c3 = new GuiElement(SizeFormat.ABSOLUTE, 20, 20, new FlowLayout());
-		c3.setBackgroundColor(0.5f, 0.5f, 0, 1);
+		GuiElement c3 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		c3.setBackgroundColor(0.5f, 0.5f, 0, 0.7f);
 		base.addChild(c3);
 		base.setPadding(10);
 		base.setSpacing(10);

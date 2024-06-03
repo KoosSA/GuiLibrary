@@ -27,7 +27,7 @@ public class FlowLayout implements ILayout {
 		for (int i = 0; i < children.size(); i++) {
 			GuiElement child = children.get(i);
 			//Checks if a new row should be created and offsets the Y position to the new row, resets X position
-			if (cursorX + child.getWidth() + (element.getPadding() * 2) > width) {
+			if (cursorX + child.getWidth() + (element.getPadding()) > width) {
 				cursorX = element.getPadding() + element.getPosX();
 				cursorY += (prevMaxHeight + element.getSpacing());
 				prevMaxHeight = 0;
