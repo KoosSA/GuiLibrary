@@ -7,6 +7,7 @@ import org.joml.Math;
 import org.joml.Vector4f;
 
 import koossa.guilib.Gui;
+import koossa.guilib.gui.GuiManager;
 import koossa.guilib.layout.ILayout;
 import koossa.guilib.layout.SizeFormat;
 
@@ -20,6 +21,7 @@ public class GuiElement {
 	private Vector4f backgroundColor;
 	private int padding = 0, spacing = 0;
 	private SizeFormat sizeFormat = SizeFormat.RELATIVE;
+	private boolean dirty = false;
 	
 	public GuiElement(SizeFormat sizeFormat, float width, float height, ILayout layout) {
 		this.layout = layout;
@@ -118,6 +120,7 @@ public class GuiElement {
 	
 	public void setBackgroundColor(float r, float g, float b, float a) {
 		this.backgroundColor.set(r, g, b, a);
+		this.dirty = true;
 	}
 	
 	public int getPadding() {
@@ -127,6 +130,7 @@ public class GuiElement {
 	public void setPadding(int padding) {
 		this.padding = padding;
 		layout.applyLayout(this, children);
+		this.dirty = true;
 	}
 	
 	public int getSpacing() {
@@ -136,6 +140,16 @@ public class GuiElement {
 	public void setSpacing(int spacing) {
 		this.spacing = spacing;
 		layout.applyLayout(this, children);
+		this.dirty = true;
+	}
+
+	public boolean isDirty() {
+		boolean d = dirty;
+		dirty = false;
+		for (int i = 0; i < children.size(); i ++) {
+			d = d || children.get(i).isDirty();
+		}
+		return d;
 	}
 	
 	

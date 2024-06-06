@@ -1,5 +1,6 @@
 package test;
 
+import org.joml.Random;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
@@ -15,12 +16,13 @@ import com.koossa.logger.Log;
 import com.koossa.savelib.SaveSystem;
 
 import koossa.guilib.Gui;
+import koossa.guilib.elements.Button;
 import koossa.guilib.elements.GuiElement;
+import koossa.guilib.elements.utils.IGuiEvent;
 import koossa.guilib.layout.FlowLayout;
 import koossa.guilib.layout.SizeFormat;
 import koossa.guilib.text.Font;
-import koossa.guilib.text.Text;
-import koossa.guilib.text.TextManager;
+import koossa.guilib.text.FontLibrary;
 import koossa.inputlib.IInputHandler;
 import koossa.inputlib.Input;
 import koossa.inputlib.InputManager;
@@ -75,9 +77,10 @@ public class TestMain {
 		Input.setMouseBinding("CLICK_PRIMARY", GLFW.GLFW_MOUSE_BUTTON_1);
 
 		Gui.init(800, 600);
-		TextManager.addTextToRender(
-				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", new Font("a.fnt"), 0, 0, 250, 0, 0.5f)
-						.setColour(0, 0, 0, 1));
+		FontLibrary.addFont("DEFAULT_FONT", new Font("a.fnt"));
+//		TextManager.addTextToRender(
+//				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250, 0, 0.5f)
+//						.setColour(0, 0, 0, 1));
 
 		IInputHandler ih = new IInputHandler() {
 			@Override
@@ -88,6 +91,8 @@ public class TestMain {
 			}
 		};
 		Input.registerInputHandler("GUI_INPUT", ih);
+		
+		Random r = new Random();
 
 		GuiElement base = new GuiElement(SizeFormat.ABSOLUTE, 230, 230, new FlowLayout());
 		
@@ -98,16 +103,22 @@ public class TestMain {
 		GuiElement c2 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
 		c2.setBackgroundColor(0, 0, 1, 1);
 		base.addChild(c2);
-		GuiElement c3 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		Button c3 = new Button(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		c3.setOnInteract(new IGuiEvent() {
+			@Override
+			public void handleGuiEvent(GuiElement element) {
+				element.setBackgroundColor(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1);
+			}
+		});
 		c3.setBackgroundColor(0.5f, 0.5f, 0, 0.7f);
 		base.addChild(c3);
 		base.setPadding(10);
 		base.setSpacing(10);
 
 		GuiElement c11 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, new FlowLayout());
-		//c1.addChild(c11);
+		c1.addChild(c11);
 		GuiElement c12 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, new FlowLayout());
-		//c1.addChild(c12);
+		c1.addChild(c12);
 		c12.setBackgroundColor(0, 0, 0, 1);
 		c1.setPadding(10);
 		c1.setSpacing(10);
@@ -115,11 +126,7 @@ public class TestMain {
 		Gui.addGui("TestPanel", base);
 		Gui.showGui("TestPanel");
 
-//		Gui.addGui("TestPanel2", new Panel(0.3f, 0.3f, 0.2f, 0.2f, true));
-//		Gui.showGui("TestPanel2");
-
 		GLFW.glfwSetWindowSizeCallback(winId, new GLFWWindowSizeCallbackI() {
-
 			@Override
 			public void invoke(long window, int width, int height) {
 				GL30.glViewport(0, 0, width, height);

@@ -22,7 +22,12 @@ public class GuiManager {
 	}
 
 	public void update(float delta) {
-		visibleGuis.forEach( (id, gui) -> gui.update());
+		visibleGuis.forEach( (id, gui) -> {
+			if (gui.isDirty()) {
+				RenderUtils.updateRenderBatch(gui, renderBatches.get(id));
+			}
+			gui.update();
+		});
 	}
 
 	public void render() {
@@ -64,7 +69,5 @@ public class GuiManager {
 		}
 		return visibleGuis.size();
 	}
-	
-	
 
 }
