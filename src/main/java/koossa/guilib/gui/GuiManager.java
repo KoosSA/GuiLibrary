@@ -1,5 +1,6 @@
 package koossa.guilib.gui;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +15,14 @@ public class GuiManager {
 	private Map<String, GuiElement> allGuis = new HashMap<String, GuiElement>();
 	private Map<String, GuiElement> visibleGuis = new HashMap<String, GuiElement>();
 	private Map<String, RenderBatch> renderBatches = new HashMap<String, RenderBatch>();
+	private InternalGuiTextureManager textureManager = new InternalGuiTextureManager();
 
+	public void loadTextureAtlases(File atlasFolder, String atlasPrefix) {
+		int texID = textureManager.loadTextureAtlasses(atlasFolder, atlasPrefix);
+		renderer.setTextureID(texID);
+		allGuis.forEach((id, ele) -> RenderUtils.updateRenderBatch(ele, renderBatches.get(id)));
+	}
+	
 	public void resize(int width, int height) {
 		renderer.resize(width, height);
 		allGuis.values().forEach(e -> e.onResize());
@@ -38,6 +46,7 @@ public class GuiManager {
 	
 	public void dispose() {
 		renderer.dispose();
+		textureManager.dispose();
 	}
 
 	public void addGui(String id, GuiElement rootElement) {

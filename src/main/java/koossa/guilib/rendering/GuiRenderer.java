@@ -16,6 +16,7 @@ public class GuiRenderer {
 	private Matrix4f projectionMatrix = new Matrix4f();
 	private GuiShader shader = new GuiShader();
 	private int vao;
+	private int guiTexture = 0;
 	private Map<BufferLocations, Integer> vbos = new HashMap<BufferLocations, Integer>();
 	
 	
@@ -29,16 +30,23 @@ public class GuiRenderer {
 		updateProjectionMatrix(width, height);
 	}
 	
+	public void setTextureID(int texID) {
+		guiTexture = texID;
+	}
+	
 	public void render(RenderBatch batch) {
 		GL30.glDisable(GL30.GL_DEPTH_TEST);
 		
 		shader.start();
 		GL30.glBindVertexArray(vao);
+		GL30.glActiveTexture(GL30.GL_TEXTURE0);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, guiTexture);
 		prepareRenderData(batch);
 		
 		GL30.glDrawElements(GL30.GL_TRIANGLES, batch.getIndices().length, GL30.GL_UNSIGNED_INT, 0);
 		
 		GL30.glBindVertexArray(0);
+		GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, 0);
 		shader.stop();
 		
 		GL30.glEnable(GL30.GL_DEPTH_TEST);
@@ -78,7 +86,7 @@ public class GuiRenderer {
 		vao = GL30.glGenVertexArrays();
 		GL30.glBindVertexArray(vao);
 		createBuffer(BufferLocations.VERTEX_BUFFER, 2);
-		createBuffer(BufferLocations.TEXTURECOORD_BUFFER, 2);
+		createBuffer(BufferLocations.TEXTURECOORD_BUFFER, 3);
 		createBuffer(BufferLocations.COLOR_BUFFER, 4);
 		createIndicesBuffer(BufferLocations.INDEX_BUFFER);
 		GL30.glBindVertexArray(0);
@@ -100,6 +108,8 @@ public class GuiRenderer {
 		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, new int[0], GL30.GL_DYNAMIC_DRAW);
 		vbos.put(index, vbo);
 	}
+
+	
 
 	
 

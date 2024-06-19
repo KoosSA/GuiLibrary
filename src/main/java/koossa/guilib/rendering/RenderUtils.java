@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import koossa.guilib.elements.GuiElement;
+import koossa.guilib.gui.InternalGuiTextureManager;
+import koossa.texturepacker.TextureInfo;
 
 public class RenderUtils {
 
@@ -69,14 +71,27 @@ public class RenderUtils {
 	}
 
 	private static void addTexCoords(GuiElement element, List<Float> texCoordList) {
-		texCoordList.add(0.000f);
-		texCoordList.add(0.000f);
-		texCoordList.add(0.000f);
-		texCoordList.add(1.000f);
-		texCoordList.add(1.000f);
-		texCoordList.add(1.000f);
-		texCoordList.add(1.000f);
-		texCoordList.add(0.000f);
+		TextureInfo info = InternalGuiTextureManager.getTexInfo(element.getTextureName());
+		float layer = (info == null) ? -1.0f : InternalGuiTextureManager.getAtlasLayer(info.getAtlasName());
+		texCoordList.add((info == null) ? 0.0f : info.getTexCoordX1());
+		texCoordList.add((info == null) ? 0.0f : info.getTexCoordY1());
+		texCoordList.add(layer);
+		
+		texCoordList.add((info == null) ? 0.0f : info.getTexCoordX1());
+		texCoordList.add((info == null) ? 0.0f : info.getTexCoordY2());
+		texCoordList.add(layer);
+		
+		
+		texCoordList.add((info == null) ? 0.0f : info.getTexCoordX2());
+		texCoordList.add((info == null) ? 0.0f : info.getTexCoordY2());
+		texCoordList.add(layer);
+		
+		
+		texCoordList.add((info == null) ? 0.0f : info.getTexCoordX2());
+		texCoordList.add((info == null) ? 0.0f : info.getTexCoordY1());
+		texCoordList.add(layer);
+		
+		
 		if (element.getChildren() != null) {
 			element.getChildren().forEach(e -> {
 				addTexCoords(e, texCoordList);

@@ -1,5 +1,8 @@
 package test;
 
+import java.io.File;
+import java.io.FilenameFilter;
+
 import org.joml.Random;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
@@ -23,6 +26,8 @@ import koossa.guilib.layout.FlowLayout;
 import koossa.guilib.layout.SizeFormat;
 import koossa.guilib.text.Font;
 import koossa.guilib.text.FontLibrary;
+import koossa.guilib.text.Text;
+import koossa.guilib.text.TextManager;
 import koossa.inputlib.IInputHandler;
 import koossa.inputlib.Input;
 import koossa.inputlib.InputManager;
@@ -76,12 +81,13 @@ public class TestMain {
 		Input.setKeyBinding("OPEN_INVENTORY", GLFW.GLFW_KEY_I);
 		Input.setMouseBinding("CLICK_PRIMARY", GLFW.GLFW_MOUSE_BUTTON_1);
 
-		Gui.init(800, 600);
+		Gui.initWithUnstitchedTextures(800, 600);
 		FontLibrary.addFont("DEFAULT_FONT", new Font("a.fnt"));
-//		TextManager.addTextToRender(
-//				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250, 0, 0.5f)
-//						.setColour(0, 0, 0, 1));
-
+		TextManager.addTextToRender(
+				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250, 0, 0.5f)
+						.setColour(0, 0, 0, 1));
+		
+		
 		IInputHandler ih = new IInputHandler() {
 			@Override
 			public void handleInput(InputManager input) {
@@ -102,12 +108,21 @@ public class TestMain {
 		base.setBackgroundColor(1, 0, 0, 1);
 		GuiElement c2 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
 		c2.setBackgroundColor(0, 0, 1, 1);
+		c2.setTextureName("circle.png");
 		base.addChild(c2);
 		Button c3 = new Button(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
 		c3.setOnInteract(new IGuiEvent() {
 			@Override
 			public void handleGuiEvent(GuiElement element) {
 				element.setBackgroundColor(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1);
+				c2.setTextureName(Files.getFolder("Gui/UnstitchedTextures").list(new FilenameFilter() {
+					
+					@Override
+					public boolean accept(File dir, String name) {
+						if (name.endsWith(".png")) return true;
+						return false;
+					}
+				})[r.nextInt(4)]);
 			}
 		});
 		c3.setBackgroundColor(0.5f, 0.5f, 0, 0.7f);

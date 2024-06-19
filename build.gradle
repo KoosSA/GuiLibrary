@@ -16,6 +16,7 @@ project.ext {
 	savesystem = "latest.release"
 	inputlib = "latest.release"
 	loglib = "latest.release"
+	texpacker = "latest.release"
 }
 
 repositories {
@@ -48,9 +49,10 @@ dependencies {
 	implementation "org.joml:joml:${jomlVersion}"
 
 	implementation "github.koossa:filesystem:$filesystem"
-	implementation "github.koossa:savesystem:$savesystem"
+	//implementation "github.koossa:savesystem:$savesystem"
 	implementation "github.koossa:logger:$loglib"
 	implementation "github.koossa:inputlibrary:$inputlib"
+	implementation "github.koossa:texturepacker:$texpacker"
 }
 
 java {

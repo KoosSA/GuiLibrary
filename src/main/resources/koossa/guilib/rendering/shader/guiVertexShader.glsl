@@ -1,10 +1,10 @@
 #version 330
 
 layout(location = 0) in vec2 position;
-layout(location = 1) in vec2 textureCoord;
+layout(location = 1) in vec3 textureCoord;
 layout(location = 2) in vec4 color;
 
-out vec2 passTexCoord;
+out vec3 passTexCoord;
 out vec4 passColor;
 
 uniform mat4 projection;

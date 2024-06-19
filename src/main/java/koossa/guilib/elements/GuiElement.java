@@ -7,7 +7,6 @@ import org.joml.Math;
 import org.joml.Vector4f;
 
 import koossa.guilib.Gui;
-import koossa.guilib.gui.GuiManager;
 import koossa.guilib.layout.ILayout;
 import koossa.guilib.layout.SizeFormat;
 
@@ -22,6 +21,7 @@ public class GuiElement {
 	private int padding = 0, spacing = 0;
 	private SizeFormat sizeFormat = SizeFormat.RELATIVE;
 	private boolean dirty = false;
+	private String textureName;
 	
 	public GuiElement(SizeFormat sizeFormat, float width, float height, ILayout layout) {
 		this.layout = layout;
@@ -152,5 +152,12 @@ public class GuiElement {
 		return d;
 	}
 	
+	public String getTextureName() {
+		return textureName;
+	}
+	
+	public void setTextureName(String textureName) {
+		this.textureName = textureName;
+	}
 	
 }

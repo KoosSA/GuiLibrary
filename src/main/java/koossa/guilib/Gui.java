@@ -1,27 +1,49 @@
 package koossa.guilib;
 
+import java.io.File;
+
+import org.lwjgl.opengl.GL30;
+
+import com.koossa.filesystem.CommonFolders;
+import com.koossa.filesystem.Files;
 import com.koossa.logger.Log;
 
 import koossa.guilib.elements.GuiElement;
 import koossa.guilib.gui.GuiManager;
 import koossa.guilib.text.TextManager;
+import koossa.texturepacker.AtlasSizes;
+import koossa.texturepacker.TexturePacker;
 
 public class Gui {
 	
 	private static float screenWidth, screenHeight;
 	private static GuiManager guiManager;
+	private static boolean initialised = false;
 	
 	public static void init(float screenWidth, float screenHeight) {
 		Gui.screenHeight = screenHeight;
 		Gui.screenWidth = screenWidth;
 		guiManager = new GuiManager();
 		TextManager.init();
+		Log.info(Gui.class, "Max number of layers of textures supported: " + GL30.glGetInteger(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS));
+		initialised = true;
+	}
+	
+	public static void initWithUnstitchedTextures(float screenWidth, float screenHeight) {
+		if (!initialised) {
+			Gui.init(screenWidth, screenHeight);
+		}
+		TexturePacker.setTargetTextureSize(AtlasSizes._1024);
+		File atlasFolder = new File(Files.getCommonFolder(CommonFolders.Gui), "Atlases");
+		TexturePacker.packTextures(new File(Files.getCommonFolder(CommonFolders.Gui), "UnstitchedTextures"), atlasFolder, "gui");
+		guiManager.loadTextureAtlases(atlasFolder, "gui");
 	}
 	
 	public static void dispose() {
 		TextManager.dispose();
 		guiManager.dispose();
 		Log.debug(Gui.class, "Disposing gui library");
+		initialised = false;
 	}
 	
 	public static void resize(int width, int height) {

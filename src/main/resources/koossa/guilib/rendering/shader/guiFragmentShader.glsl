@@ -1,12 +1,18 @@
 #version 330
 
-in vec2 passTexCoord;
+in vec3 passTexCoord;
 in vec4 passColor;
 
 out vec4 color;
 
+uniform sampler2DArray tex;
+
 void main() {
 	
-	color = passColor;
+	if (passTexCoord.b == -1) {
+		color = passColor;
+	} else {
+		color = texture(tex, passTexCoord);
+	}
 
 }
