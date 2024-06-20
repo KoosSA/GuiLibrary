@@ -101,6 +101,7 @@ public class TestMain {
 		Random r = new Random();
 
 		GuiElement base = new GuiElement(SizeFormat.ABSOLUTE, 230, 230, new FlowLayout());
+		base.setPosition(100, 100);
 		
 		GuiElement c1 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
 		c1.setBackgroundColor(0, 1, 0, 1);
@@ -111,24 +112,31 @@ public class TestMain {
 		c2.setTextureName("circle.png");
 		base.addChild(c2);
 		Button c3 = new Button(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		c3.setPosition(0, 0);
 		c3.setOnInteract(new IGuiEvent() {
 			@Override
 			public void handleGuiEvent(GuiElement element) {
-				element.setBackgroundColor(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1);
-				c2.setTextureName(Files.getFolder("Gui/UnstitchedTextures").list(new FilenameFilter() {
-					
-					@Override
-					public boolean accept(File dir, String name) {
-						if (name.endsWith(".png")) return true;
-						return false;
-					}
-				})[r.nextInt(4)]);
+				c2.setBackgroundColor(r.nextFloat(), r.nextFloat(), r.nextFloat(), r.nextFloat());
+//				c2.setTextureName(Files.getFolder("Gui/UnstitchedTextures").list(new FilenameFilter() {
+//					
+//					@Override
+//					public boolean accept(File dir, String name) {
+//						if (name.endsWith(".png")) return true;
+//						return false;
+//					}
+//				})[r.nextInt(4)]);
 			}
 		});
 		c3.setBackgroundColor(0.5f, 0.5f, 0, 0.7f);
 		base.addChild(c3);
 		base.setPadding(10);
 		base.setSpacing(10);
+		GuiElement c4 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		c4.setTextureName("cross.png");
+		base.addChild(c4);
+		GuiElement c5 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		c5.setTextureName("square.png");
+		base.addChild(c5);
 
 		GuiElement c11 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, new FlowLayout());
 		c1.addChild(c11);

@@ -19,6 +19,7 @@ public class Button extends GuiElement implements IInputHandler {
 
 	@Override
 	public void handleInput(InputManager input) {
+		if (!isInBounds()) return;
 		if (getPosX() < input.getCurrentMouseX() && getPosX() + getWidth() > input.getCurrentMouseX() && 
 				getPosY() < input.getCurrentMouseY() && getPosY() + getHeight() > input.getCurrentMouseY()) {
 			if (!hovering) {

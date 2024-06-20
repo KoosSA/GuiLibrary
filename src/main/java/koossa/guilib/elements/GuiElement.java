@@ -66,7 +66,15 @@ public class GuiElement {
 		layout.applyLayout(this, children);
 	}
 
-	
+	public boolean isInBounds() {
+		if (parent == null) {
+			return true;
+		}
+		if (posX >= parent.posX && posY >= parent.posY && posX+width <= parent.posX+parent.width && posY+height <= parent.posY+parent.height) {
+			return true;
+		}
+		return false;
+	}
 	
 	
 	
@@ -96,6 +104,12 @@ public class GuiElement {
 	
 	public int getPosY() {
 		return posY;
+	}
+	
+	public GuiElement setPosition(int x, int y) {
+		setPosX(x);
+		setPosY(y);
+		return this;
 	}
 	
 	public void setPosY(int posY) {
@@ -157,7 +171,13 @@ public class GuiElement {
 	}
 	
 	public void setTextureName(String textureName) {
+		if (this.textureName == null) {
+			setBackgroundColor(1, 1, 1, 0);
+		}
 		this.textureName = textureName;
+		this.dirty = true;
 	}
+	
+	
 	
 }

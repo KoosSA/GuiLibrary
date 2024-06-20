@@ -15,28 +15,18 @@ public class RenderUtils {
 	public static void updateRenderBatch(GuiElement parentElement, RenderBatch batch) {
 		tempFloatList.clear();
 		addVertices(parentElement, tempFloatList);
-//		parentElement.getChildren().forEach(elem -> {
-//			addVertices(elem, tempFloatList);
-//		});
 		batch.updateVertices(tempFloatList);
 
 		tempIntList.clear();
-//		addIndices(parentElement.getChildren().size() + 1, tempIntList);
 		addIndices(batch, tempIntList);
 		batch.updateIndices(tempIntList);
 
 		tempFloatList.clear();
 		addTexCoords(parentElement, tempFloatList);
-//		parentElement.getChildren().forEach(elem -> {
-//			addTexCoords(parentElement, tempFloatList);
-//		});
 		batch.updateTexCoords(tempFloatList);
 
 		tempFloatList.clear();
 		addColor(parentElement, tempFloatList);
-//		parentElement.getChildren().forEach(elem -> {
-//			addColor(elem, tempFloatList);
-//		});
 		batch.updateColors(tempFloatList);
 	}
 
@@ -49,7 +39,7 @@ public class RenderUtils {
 		}
 		if (element.getChildren() != null) {
 			element.getChildren().forEach(e -> {
-				addColor(e, colorList);
+				if (e.isInBounds()) addColor(e, colorList);
 			});
 		}
 	}
@@ -65,7 +55,7 @@ public class RenderUtils {
 		verticesList.add(0.000f + element.getPosY());
 		if (element.getChildren() != null) {
 			element.getChildren().forEach(e -> {
-				addVertices(e, verticesList);
+				if (e.isInBounds()) addVertices(e, verticesList);
 			});
 		}
 	}
@@ -94,7 +84,7 @@ public class RenderUtils {
 		
 		if (element.getChildren() != null) {
 			element.getChildren().forEach(e -> {
-				addTexCoords(e, texCoordList);
+				if (e.isInBounds()) addTexCoords(e, texCoordList);
 			});
 		}
 	}
