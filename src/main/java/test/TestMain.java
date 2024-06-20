@@ -1,8 +1,5 @@
 package test;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
 import org.joml.Random;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
@@ -22,7 +19,7 @@ import koossa.guilib.Gui;
 import koossa.guilib.elements.Button;
 import koossa.guilib.elements.GuiElement;
 import koossa.guilib.elements.utils.IGuiEvent;
-import koossa.guilib.layout.FlowLayout;
+import koossa.guilib.layout.Layouts;
 import koossa.guilib.layout.SizeFormat;
 import koossa.guilib.text.Font;
 import koossa.guilib.text.FontLibrary;
@@ -84,7 +81,7 @@ public class TestMain {
 		Gui.initWithUnstitchedTextures(800, 600);
 		FontLibrary.addFont("DEFAULT_FONT", new Font("a.fnt"));
 		TextManager.addTextToRender(
-				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250, 0, 0.5f)
+				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250, 0, 1f)
 						.setColour(0, 0, 0, 1));
 		
 		
@@ -100,18 +97,18 @@ public class TestMain {
 		
 		Random r = new Random();
 
-		GuiElement base = new GuiElement(SizeFormat.ABSOLUTE, 230, 230, new FlowLayout());
+		GuiElement base = new GuiElement(SizeFormat.ABSOLUTE, 230, 230, Layouts.FLOW_LAYOUT);
 		base.setPosition(100, 100);
 		
-		GuiElement c1 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		GuiElement c1 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c1.setBackgroundColor(0, 1, 0, 1);
 		base.addChild(c1);
 		base.setBackgroundColor(1, 0, 0, 1);
-		GuiElement c2 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		GuiElement c2 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c2.setBackgroundColor(0, 0, 1, 1);
 		c2.setTextureName("circle.png");
 		base.addChild(c2);
-		Button c3 = new Button(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		Button c3 = new Button(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c3.setPosition(0, 0);
 		c3.setOnInteract(new IGuiEvent() {
 			@Override
@@ -131,18 +128,18 @@ public class TestMain {
 		base.addChild(c3);
 		base.setPadding(10);
 		base.setSpacing(10);
-		GuiElement c4 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		GuiElement c4 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c4.setTextureName("cross.png");
 		base.addChild(c4);
-		GuiElement c5 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, new FlowLayout());
+		GuiElement c5 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c5.setTextureName("square.png");
 		base.addChild(c5);
 
-		GuiElement c11 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, new FlowLayout());
+		GuiElement c11 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, Layouts.FLOW_LAYOUT);
 		c1.addChild(c11);
-		GuiElement c12 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, new FlowLayout());
+		GuiElement c12 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, Layouts.FLOW_LAYOUT);
 		c1.addChild(c12);
-		c12.setBackgroundColor(0, 0, 0, 1);
+		c12.setTextureName("triangle.png");
 		c1.setPadding(10);
 		c1.setSpacing(10);
 

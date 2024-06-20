@@ -1,8 +1,10 @@
 package koossa.guilib.text;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.stb.STBImage;
 
+import com.koossa.filesystem.CommonFolders;
+import com.koossa.filesystem.Files;
 import com.koossa.logger.Log;
 
 public class Font {
@@ -25,17 +29,27 @@ public class Font {
 	
 	public Font(String fontName) {
 		glyphs = new HashMap<Integer, Glyph>();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(fontName)));
-		String line;
+//		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(fontName)));
+		
 		try {
-			while ( (line = reader.readLine()) != null) {
-				parseLine(line);
+			BufferedReader reader = new BufferedReader(new FileReader(new File(Files.getCommonFolder(CommonFolders.Fonts), fontName)));
+			String line;
+			try {
+				while ( (line = reader.readLine()) != null) {
+					parseLine(line);
+				}
+			} catch (IOException e) {
+				Log.error(this, "Error while reading font file: " + fontName);
+				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			Log.error(this, "File not found in internal system: " + fontName);
+			allFonts.add(this);
+		} catch (FileNotFoundException e) {
+			Log.error(this, "Font file not found: " + fontName);
+			Log.error(this, e.getMessage());
 			e.printStackTrace();
 		}
-		allFonts.add(this);
+		
+		
 	}
 	
 	public Map<Integer, Glyph> getGlyphs() {
@@ -93,7 +107,7 @@ public class Font {
 		GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
 		int[] x = new int[1], y = new int[1], c = new int[1];
 		STBImage.stbi_set_flip_vertically_on_load(true);
-		ByteBuffer buff = STBImage.stbi_load("fonts/arial.png", x, y, c, STBImage.STBI_rgb_alpha);
+		ByteBuffer buff = STBImage.stbi_load(Files.getCommonFolderPath(CommonFolders.Fonts) + "/" + textureName, x, y, c, STBImage.STBI_rgb_alpha);
 		GL30.glPixelStorei(GL30.GL_UNPACK_ALIGNMENT, 1);
 		GL30.glTexImage2D(GL30.GL_TEXTURE_2D, 0, GL30.GL_RGBA, x[0], y[0], 0, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, buff);
 		GL30.glGenerateMipmap(GL30.GL_TEXTURE_2D);

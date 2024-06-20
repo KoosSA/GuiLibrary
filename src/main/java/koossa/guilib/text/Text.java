@@ -107,6 +107,7 @@ public class Text {
 
 		vertices[i * 12 + 10] = vertices[i * 12 + 4];
 		vertices[i * 12 + 11] = vertices[i * 12 + 3];
+		
 
 	}
 
