@@ -1,7 +1,7 @@
 package koossa.guilib.elements;
 
 import koossa.guilib.elements.utils.IGuiEvent;
-import koossa.guilib.layout.ILayout;
+import koossa.guilib.layout.Layouts;
 import koossa.guilib.layout.SizeFormat;
 import koossa.inputlib.IInputHandler;
 import koossa.inputlib.Input;
@@ -12,7 +12,7 @@ public class Button extends GuiElement implements IInputHandler {
 	private IGuiEvent onHoverStart, onHoverEnd, onInteract;
 	private boolean hovering = false;
 
-	public Button(SizeFormat sizeFormat, float width, float height, ILayout layout) {
+	public Button(SizeFormat sizeFormat, float width, float height, Layouts layout) {
 		super(sizeFormat, width, height, layout);
 		Input.registerInputHandler("GUI_INPUT", this);
 	}

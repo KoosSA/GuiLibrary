@@ -6,10 +6,9 @@ import com.koossa.logger.Log;
 
 import koossa.guilib.elements.GuiElement;
 
-public class FlowLayout implements ILayout {
+class FlowLayout implements ILayout {
 	
 	private int cursorX = 0, cursorY = 0;
-	private float width;
 	
 	public FlowLayout() {
 		
@@ -17,7 +16,6 @@ public class FlowLayout implements ILayout {
 
 	@Override
 	public void applyLayout(GuiElement element, List<GuiElement> children) {
-		this.width = element.getWidth();
 		int prevMaxHeight = 0;
 		this.cursorX = element.getPadding() + element.getPosX();
 		this.cursorY = element.getPadding() + element.getPosY();
