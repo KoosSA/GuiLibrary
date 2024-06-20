@@ -5,6 +5,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
+import org.lwjgl.glfw.GLFWScrollCallbackI;
 import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL30;
@@ -18,6 +19,7 @@ import com.koossa.savelib.SaveSystem;
 import koossa.guilib.Gui;
 import koossa.guilib.elements.Button;
 import koossa.guilib.elements.GuiElement;
+import koossa.guilib.elements.ScrollPanel;
 import koossa.guilib.elements.utils.IGuiEvent;
 import koossa.guilib.layout.Layouts;
 import koossa.guilib.layout.SizeFormat;
@@ -45,6 +47,13 @@ public class TestMain {
 		GL30.glViewport(0, 0, 800, 600);
 
 		GLFW.glfwShowWindow(winId);
+		
+		GLFW.glfwSetScrollCallback(winId, new GLFWScrollCallbackI() {
+			@Override
+			public void invoke(long window, double xoffset, double yoffset) {
+				Input.addScrollOffset((float) xoffset, (float) yoffset);
+			}
+		});
 
 		GLFW.glfwSetKeyCallback(winId, new GLFWKeyCallbackI() {
 			@Override
@@ -81,7 +90,7 @@ public class TestMain {
 		Gui.initWithUnstitchedTextures(800, 600);
 		FontLibrary.addFont("DEFAULT_FONT", new Font("a.fnt"));
 		TextManager.addTextToRender(
-				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250, 0, 1f)
+				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250, 0, 0.5f)
 						.setColour(0, 0, 0, 1));
 		
 		
@@ -97,11 +106,13 @@ public class TestMain {
 		
 		Random r = new Random();
 
-		GuiElement base = new GuiElement(SizeFormat.ABSOLUTE, 230, 230, Layouts.FLOW_LAYOUT);
+		ScrollPanel base = new ScrollPanel(SizeFormat.ABSOLUTE, 230, 230, Layouts.FLOW_LAYOUT);
 		base.setPosition(100, 100);
+		base.setScrollSpeed(3);
 		
 		GuiElement c1 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c1.setBackgroundColor(0, 1, 0, 1);
+		
 		base.addChild(c1);
 		base.setBackgroundColor(1, 0, 0, 1);
 		GuiElement c2 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);

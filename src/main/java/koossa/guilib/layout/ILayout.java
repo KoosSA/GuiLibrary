@@ -8,6 +8,6 @@ public interface ILayout {
 	
 	//void applyLayout();
 
-	void applyLayout(GuiElement element, List<GuiElement> children);
+	void applyLayout(GuiElement element, List<GuiElement> children, int scrollYOffset);
 
 }

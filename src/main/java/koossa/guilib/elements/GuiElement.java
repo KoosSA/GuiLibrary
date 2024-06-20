@@ -13,7 +13,7 @@ import koossa.guilib.layout.SizeFormat;
 
 public class GuiElement {
 	
-	private ILayout layout;
+	protected ILayout layout;
 	private int width, height, posX, posY;
 	private float relativeWidth, relativeHeight;
 	private GuiElement parent;
@@ -23,6 +23,7 @@ public class GuiElement {
 	private SizeFormat sizeFormat = SizeFormat.RELATIVE;
 	private boolean dirty = false;
 	private String textureName;
+	protected int childYOffset = 0;
 	
 	public GuiElement(SizeFormat sizeFormat, float width, float height, Layouts layout) {
 		this.layout = layout.getValue();
@@ -41,7 +42,7 @@ public class GuiElement {
 		child.height = (int) ((child.sizeFormat == SizeFormat.RELATIVE) ? (height * child.relativeHeight) : child.height);
 //		child.width = (int) (width * child.relativeWidth);
 //		child.height = (int) (height * child.relativeHeight);
-		layout.applyLayout(this, children);
+		layout.applyLayout(this, children, 0);
 	}
 	
 	public void update() {
@@ -64,7 +65,7 @@ public class GuiElement {
 //			this.height = (int) (parent.getHeight() * relativeHeight);
 //		}
 		children.forEach(c -> c.onResize());
-		layout.applyLayout(this, children);
+		recalculateLayout();
 	}
 
 	public boolean isInBounds() {
@@ -144,7 +145,7 @@ public class GuiElement {
 	
 	public void setPadding(int padding) {
 		this.padding = padding;
-		layout.applyLayout(this, children);
+		recalculateLayout();
 		this.dirty = true;
 	}
 	
@@ -154,7 +155,7 @@ public class GuiElement {
 	
 	public void setSpacing(int spacing) {
 		this.spacing = spacing;
-		layout.applyLayout(this, children);
+		recalculateLayout();
 		this.dirty = true;
 	}
 
@@ -180,5 +181,13 @@ public class GuiElement {
 	}
 	
 	
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+	
+	public void recalculateLayout() {
+		layout.applyLayout(this, children, childYOffset);
+		children.forEach(c -> c.recalculateLayout());
+	}
 	
 }

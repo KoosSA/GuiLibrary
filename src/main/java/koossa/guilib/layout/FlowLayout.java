@@ -2,9 +2,8 @@ package koossa.guilib.layout;
 
 import java.util.List;
 
-import com.koossa.logger.Log;
-
 import koossa.guilib.elements.GuiElement;
+import koossa.guilib.elements.ScrollPanel;
 
 class FlowLayout implements ILayout {
 	
@@ -15,7 +14,7 @@ class FlowLayout implements ILayout {
 	}
 
 	@Override
-	public void applyLayout(GuiElement element, List<GuiElement> children) {
+	public void applyLayout(GuiElement element, List<GuiElement> children, int scrollYOffset) {
 		int prevMaxHeight = 0;
 		this.cursorX = element.getPadding() + element.getPosX();
 		this.cursorY = element.getPadding() + element.getPosY();
@@ -29,11 +28,16 @@ class FlowLayout implements ILayout {
 				prevMaxHeight = 0;
 			}
 			//Sets the child position
-			child.setPosX(cursorX);
-			child.setPosY(cursorY);
-			if (! child.isInBounds()) {
-				Log.debug(this, "Gui element: " + child + " is not in bounds of parent. Will not be displayed or updated.");
+			if (element instanceof ScrollPanel) {
+				child.setPosX(cursorX);
+				child.setPosY(cursorY + scrollYOffset);
+			} else {
+				child.setPosX(cursorX);
+				child.setPosY(cursorY);
 			}
+//			if (! child.isInBounds()) {
+//				Log.debug(this, "Gui element: " + child + " is not in bounds of parent. Will not be displayed or updated.");
+//			}
 			//Advances the X cursor
 			cursorX  += child.getWidth() + element.getSpacing();
 			prevMaxHeight = Math.max(prevMaxHeight, child.getHeight());
