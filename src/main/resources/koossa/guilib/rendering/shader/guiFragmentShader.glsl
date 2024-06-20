@@ -12,7 +12,7 @@ void main() {
 	if (passTexCoord.b == -1) {
 		color = passColor;
 	} else {
-		color = texture(tex, passTexCoord);
+		color = mix(texture(tex, passTexCoord), passColor, passColor.a);
 	}
 
 }
