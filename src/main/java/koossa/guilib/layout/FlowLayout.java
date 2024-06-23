@@ -8,10 +8,6 @@ import koossa.guilib.elements.ScrollPanel;
 class FlowLayout implements ILayout {
 	
 	private int cursorX = 0, cursorY = 0;
-	
-	public FlowLayout() {
-		
-	}
 
 	@Override
 	public void applyLayout(GuiElement element, List<GuiElement> children, int scrollYOffset) {

@@ -1,5 +1,7 @@
 package koossa.guilib.elements;
 
+import org.joml.Math;
+
 import koossa.guilib.elements.utils.IGuiEvent;
 import koossa.guilib.layout.Layouts;
 import koossa.guilib.layout.SizeFormat;
@@ -11,8 +13,8 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 	
 	private IGuiEvent onHoverStart, onHoverEnd, onInteract;
 	private boolean hovering = false;
-	private int scrollYOffset = 0;
 	private int scrollSpeed = 2;
+	private boolean smoothScrolling = false;
 	
 	public ScrollPanel(SizeFormat sizeFormat, float width, float height, Layouts layout) {
 		super(sizeFormat, width, height, layout);
@@ -43,8 +45,17 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 		}
 		if (hovering && input.getScrollYOffset() != 0) {
 			childYOffset += (input.getScrollYOffset() * scrollSpeed);
+			childYOffset = Math.clamp(-getChildren().getLast().getPosY() + getChildren().getLast().getHeight() + getPadding(), 0, childYOffset);
 			recalculateLayout();
 			setDirty(true);
+		}
+	}
+	
+	@Override
+	public void recalculateLayout() {
+		super.recalculateLayout();
+		if (!smoothScrolling) {
+			scrollSpeed = getChildMaxHeight() + getPadding();
 		}
 	}
 	
@@ -52,4 +63,15 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 		this.scrollSpeed = scrollSpeed;
 	}
 
+	private int getChildMaxHeight() {
+		int max = 0;
+		for (int i = 0; i < getChildren().size(); i++ ) {
+			if (getChildren().get(i).getHeight() > max) {
+				max = getChildren().get(i).getHeight();
+			}
+		}
+		return max;
+	}
+
+	
 }
