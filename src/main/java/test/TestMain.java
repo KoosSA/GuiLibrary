@@ -85,13 +85,15 @@ public class TestMain {
 		Input.registerNewInputManger("GUI_INPUT");
 		Input.activateInputManager("GUI_INPUT");
 		Input.setKeyBinding("OPEN_INVENTORY", GLFW.GLFW_KEY_I);
+		Input.setKeyBinding("UP", GLFW.GLFW_KEY_UP);
+		Input.setKeyBinding("DOWN", GLFW.GLFW_KEY_DOWN);
 		Input.setMouseBinding("CLICK_PRIMARY", GLFW.GLFW_MOUSE_BUTTON_1);
 
 		Gui.initWithUnstitchedTextures(800, 600);
-		FontLibrary.addFont("DEFAULT_FONT", new Font("a.fnt"));
-		TextManager.addTextToRender(
-				new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250, 0, 0.5f)
-						.setColour(0, 0, 0, 1));
+		FontLibrary.addFont("DEFAULT_FONT", new Font("c.fnt"));
+		Text text = new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250)
+				.setColour(0, 0, 0, 1);
+		TextManager.addTextToRender(text);
 		
 		
 		IInputHandler ih = new IInputHandler() {
@@ -99,6 +101,12 @@ public class TestMain {
 			public void handleInput(InputManager input) {
 				if (input.isFunctionKeyJustPressed("OPEN_INVENTORY")) {
 					Gui.toggleGui("TestPanel");
+				}
+				if (input.isFunctionKeyDown("DOWN")) {
+					text.setSize(text.getSize() - 1);
+				}
+				if (input.isFunctionKeyDown("UP")) {
+					text.setSize(text.getSize() + 1);
 				}
 			}
 		};

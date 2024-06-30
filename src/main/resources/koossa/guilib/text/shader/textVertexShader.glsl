@@ -6,11 +6,10 @@ layout(location = 1) in vec2 textureCoord;
 out vec2 passTexCoord;
 
 uniform mat4 projection;
-uniform mat4 transformation;
 
 void main() {
 
-	gl_Position = projection * transformation * vec4(position, 0, 1);
+	gl_Position = projection * vec4(position, 0, 1);
 
 	passTexCoord = textureCoord;
 	

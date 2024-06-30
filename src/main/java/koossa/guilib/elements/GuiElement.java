@@ -75,8 +75,7 @@ public class GuiElement {
 		if (posX >= parent.posX && posY >= parent.posY && posX+width <= parent.posX+parent.width && posY+height <= parent.posY+parent.height) {
 			return true;
 		}
-		//FIXME SET LAST RETURN TO FALSE
-		return true;
+		return false;
 	}
 	
 	

@@ -24,11 +24,16 @@ public class Font {
 	private Map<Integer, Glyph> glyphs;
 	private int textureId;
 	private float texWidth = 0;
+	private float lineHeight = 0;
+	private float padding = 0;
+	private float size = 0;
+	private String name;
 	private static final Glyph DEFAULT_GLYPH = new Glyph(0, 0, 0, 0, 0, 0, 0);
 	private static List<Font> allFonts = new ArrayList<Font>();
 	
 	public Font(String fontName) {
 		glyphs = new HashMap<Integer, Glyph>();
+		name = fontName;
 //		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(fontName)));
 		
 		try {
@@ -66,11 +71,26 @@ public class Font {
 
 	private void parseLine(String line) {
 		line = StringUtils.normalizeSpace(line);
-		if (line.startsWith("common")) {
+		if (line.startsWith("info")) {
+			String[] arr = line.split(" ");
+			for (int i = 0; i < arr.length; i++) {
+				if (arr[i].startsWith("padding=")) {
+					padding = Float.parseFloat(arr[i].split("=")[1].split(",")[0]) ;
+					continue;
+				} else if (arr[i].startsWith("size=")) {
+					size = Float.parseFloat(arr[i].split("=")[1]) ;
+					continue;
+				}
+			}
+		}
+		else if (line.startsWith("common")) {
 			String[] arr = line.split(" ");
 			for (int i = 0; i < arr.length; i++) {
 				if (arr[i].startsWith("scaleW=")) {
 					texWidth = Float.parseFloat(arr[i].split("=")[1]) ;
+					continue;
+				} else if (arr[i].startsWith("lineHeight=")) {
+					lineHeight = Float.parseFloat(arr[i].split("=")[1]) ;
 					continue;
 				}
 			}
@@ -123,11 +143,28 @@ public class Font {
 	public float getTexWidth() {
 		return texWidth;
 	}
+	
+	public float getLineHeight() {
+		return lineHeight;
+	}
 
 	public static void disposeAll() {
 		allFonts.forEach(f -> {
 			GL30.glDeleteTextures(f.getTextureId());
 		});
+	}
+	
+	public float getPadding() {
+		return padding;
+	}
+	
+	public float getSize() {
+		return size;
+	}
+	
+	@Override
+	public String toString() {
+		return "Fontname=" + name + ", size=" + size + ", padding=" + padding + ", lineHeight=" + lineHeight;
 	}
 	
 

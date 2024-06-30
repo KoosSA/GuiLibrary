@@ -50,7 +50,7 @@ public class TextManager {
 		
 		float[] vertices = torender.get(0).getVertices();
 		float[] textureCoords = torender.get(0).getTexCoords();
-		
+				
 		if (vertices == null || textureCoords == null) return 0;
 		
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbo);
@@ -71,7 +71,6 @@ public class TextManager {
 		GL30.glBindVertexArray(vao);
 		int size = prepareRenderData();
 		
-		shader.loadTransformation(torender.get(0).getTransformationMatrix());
 		shader.loadColour(torender.get(0).getColour());
 		
 		GL30.glDrawArrays(GL30.GL_TRIANGLES, 0, size);
