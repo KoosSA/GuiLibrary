@@ -8,13 +8,19 @@ uniform sampler2D tex;
 
 uniform vec4 uni_colour;
 
+const float width = 0.5f;
+const float edge = 0.1f;
+
 void main() {
 
-	vec4 col = texture(tex, passTexCoord);
-	if (col.a < 0.47f) {
+	float distanceFromCenter = 1.0f - texture(tex, passTexCoord).a;
+	float newAlpha = 1.0f - smoothstep(width, width + edge, distanceFromCenter);
+	
+	//vec4 col = texture(tex, passTexCoord);
+	if (newAlpha == 0.0f) {
 		discard;
 	}
 	
-	colour = vec4(uni_colour.rgb, 1);
+	colour = vec4(uni_colour.rgb, newAlpha);
 
 }
