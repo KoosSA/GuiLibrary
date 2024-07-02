@@ -8,6 +8,8 @@ import koossa.guilib.elements.GuiElement;
 import koossa.guilib.rendering.GuiRenderer;
 import koossa.guilib.rendering.RenderBatch;
 import koossa.guilib.rendering.RenderUtils;
+import koossa.guilib.text.Font;
+import koossa.guilib.text.FontLibrary;
 
 public class GuiManager {
 	

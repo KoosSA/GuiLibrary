@@ -10,6 +10,8 @@ import com.koossa.logger.Log;
 
 import koossa.guilib.elements.GuiElement;
 import koossa.guilib.gui.GuiManager;
+import koossa.guilib.text.Font;
+import koossa.guilib.text.FontLibrary;
 import koossa.guilib.text.TextManager;
 import koossa.texturepacker.AtlasSizes;
 import koossa.texturepacker.TexturePacker;
@@ -26,6 +28,7 @@ public class Gui {
 		guiManager = new GuiManager();
 		TextManager.init();
 		Log.info(Gui.class, "Max number of layers of textures supported: " + GL30.glGetInteger(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS));
+		FontLibrary.addFont("DEFAULT_FONT", new Font("c.fnt"));
 		initialised = true;
 	}
 	
@@ -89,7 +92,5 @@ public class Gui {
 	public static void update(float delta) {
 		guiManager.update(delta);
 	}
-
-	
 
 }

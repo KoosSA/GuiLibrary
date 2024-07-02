@@ -19,14 +19,13 @@ import com.koossa.savelib.SaveSystem;
 import koossa.guilib.Gui;
 import koossa.guilib.elements.Button;
 import koossa.guilib.elements.GuiElement;
+import koossa.guilib.elements.Label;
 import koossa.guilib.elements.ScrollPanel;
 import koossa.guilib.elements.utils.IGuiEvent;
 import koossa.guilib.layout.Layouts;
 import koossa.guilib.layout.SizeFormat;
-import koossa.guilib.text.Font;
 import koossa.guilib.text.FontLibrary;
 import koossa.guilib.text.Text;
-import koossa.guilib.text.TextManager;
 import koossa.inputlib.IInputHandler;
 import koossa.inputlib.Input;
 import koossa.inputlib.InputManager;
@@ -90,10 +89,10 @@ public class TestMain {
 		Input.setMouseBinding("CLICK_PRIMARY", GLFW.GLFW_MOUSE_BUTTON_1);
 
 		Gui.initWithUnstitchedTextures(800, 600);
-		FontLibrary.addFont("DEFAULT_FONT", new Font("c.fnt"));
-		Text text = new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 0, 0, 250)
+		
+		Text text = new Text("abcdefghijklmnopqrstuvwxyz . 0123456789 /*-+", FontLibrary.getFont("DEFAULT_FONT"), 100, 100, 250, 100)
 				.setColour(0, 0, 0, 1);
-		TextManager.addTextToRender(text);
+		//TextManager.addTextToRender(text);
 		
 		
 		IInputHandler ih = new IInputHandler() {
@@ -117,6 +116,9 @@ public class TestMain {
 		ScrollPanel base = new ScrollPanel(SizeFormat.ABSOLUTE, 230, 230, Layouts.FLOW_LAYOUT);
 		base.setPosition(100, 100);
 		base.setScrollSpeed(3);
+		
+		Label l1 = new Label(SizeFormat.ABSOLUTE, 210, 30, "My label 1."); 
+		base.addChild(l1);
 		
 		GuiElement c1 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c1.setBackgroundColor(0, 1, 0, 1);

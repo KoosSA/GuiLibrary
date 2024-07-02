@@ -6,9 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +27,7 @@ public class Font {
 	private float size = 0;
 	private String name;
 	private static final Glyph DEFAULT_GLYPH = new Glyph(0, 0, 0, 0, 0, 0, 0);
-	private static List<Font> allFonts = new ArrayList<Font>();
+	//private static List<Font> allFonts = new ArrayList<Font>();
 	
 	public Font(String fontName) {
 		glyphs = new HashMap<Integer, Glyph>();
@@ -47,7 +45,7 @@ public class Font {
 				Log.error(this, "Error while reading font file: " + fontName);
 				e.printStackTrace();
 			}
-			allFonts.add(this);
+//			allFonts.add(this);
 		} catch (FileNotFoundException e) {
 			Log.error(this, "Font file not found: " + fontName);
 			Log.error(this, e.getMessage());
@@ -149,9 +147,9 @@ public class Font {
 	}
 
 	public static void disposeAll() {
-		allFonts.forEach(f -> {
-			GL30.glDeleteTextures(f.getTextureId());
-		});
+//		allFonts.forEach(f -> {
+//			GL30.glDeleteTextures(f.getTextureId());
+//		});
 	}
 	
 	public float getPadding() {

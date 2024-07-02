@@ -1,5 +1,9 @@
 package koossa.guilib.text;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector4f;
 
 public class Text {
@@ -16,17 +20,24 @@ public class Text {
 	float cursorPosY = 0;
 	Vector4f colour = new Vector4f(0, 0, 0, 1);
 	float currentSize = 0;
+	boolean multiline = true;
+	
+	private List<Float> verticesList = new ArrayList<Float>();
+	private List<Float> texCoordList = new ArrayList<Float>();
+	private byte[] bytes;
 
 	float[] vertices;
 	float[] texCoords;
 
-	public Text(String text, Font font, float posX, float posY, float maxLineLength) {
+	public Text(String text, Font font, float posX, float posY, float maxLineLength, float size) {
 		this.text = text;
 		this.font = font;
 		this.posX = posX;
 		this.posY = posY;
 		this.maxLineWidth = maxLineLength;
-		this.currentSize = font.getSize();
+		currentSize = size;
+		scale = currentSize / font.getSize();
+		bytes = text.getBytes();
 		createQuads();
 	}
 
@@ -42,90 +53,132 @@ public class Text {
 		}
 		currentSize = size;
 		scale = currentSize / font.getSize();
-		updateQuads();
+		createQuads();
 		return this;
 	}
-
-	private void updateQuads() {
-		byte[] bytes = text.getBytes();
-		cursorPosX = 0;
-		cursorPosY = 0;
-		for (int i = 0; i < bytes.length; i++) {
-			int b = bytes[i];
-			Glyph g = font.getGlyph(b);
-			if (cursorPosX + g.getX_Advance() * scale >= maxLineWidth) {
-				cursorPosY -= ((font.getLineHeight() * scale) - (font.getPadding() * scale * 2));
-				cursorPosX = 0;
-			}
-			generateVertices(i, g);
-			if (!(cursorPosX == 0 && b == 32)) {
-				cursorPosX += (g.getX_Advance() * scale - (font.getPadding() * scale * 2));
-			}
+	
+	public Text setMultiline(boolean multiLine) {
+		if (this.multiline != multiLine) {
+			this.multiline = multiLine;
+			createQuads();
 		}
+		return this;
+	}
+	
+	public Text setPosition(float posX, float posY) {
+		this.posX = posX;
+		this.posY = posY;
+		createQuads();
+		return this;
 	}
 	
 	private void createQuads() {
-		byte[] bytes = text.getBytes();
-		vertices = new float[12 * bytes.length];
-		texCoords = new float[12 * bytes.length];
-		for (int i = 0; i < bytes.length; i++) {
-			int b = bytes[i];
-			Glyph g = font.getGlyph(b);
-
-			if (cursorPosX + g.getX_Advance() * scale >= maxLineWidth) {
-				cursorPosY -= (font.getLineHeight() * scale - (font.getPadding() * scale * 2));
-				cursorPosX = 0;
+//		vertices = new float[12 * bytes.length];
+//		texCoords = new float[12 * bytes.length];
+		verticesList.clear();
+		texCoordList.clear();
+		cursorPosX = posX;
+		cursorPosY = -posY;
+		for (int index = 0; index < bytes.length; index++) {
+			int b = bytes[index];
+			Glyph glyph = font.getGlyph(b);
+			if (cursorPosX + glyph.getX_Advance() * scale >= maxLineWidth + posX) {
+				if (!multiline) {
+					break;
+				}
+				cursorPosY -= ((font.getLineHeight() * scale) - (font.getPadding() * scale * 2));
+				cursorPosX = posX;
 			}
 
-			generateVertices(i, g);
-			generateTexCoords(i, g);
+			generateVertices(index, glyph);
+			generateTexCoords(index, glyph);
 
 			if (!(cursorPosX == 0 && b == 32)) {
-				cursorPosX += (g.getX_Advance() * scale - (font.getPadding() * scale * 2));
+				cursorPosX += (glyph.getX_Advance() * scale - (font.getPadding() * scale * 2));
 			}
 		}
-
+		
+		vertices = ArrayUtils.toPrimitive(verticesList.toArray(new Float[0]));
+		texCoords = ArrayUtils.toPrimitive(texCoordList.toArray(new Float[0]));
+		
 	}
 
-	private void generateTexCoords(int i, Glyph g) {
-		texCoords[i * 12 + 0] = (float) g.getX() / font.getTexWidth();
-		texCoords[i * 12 + 1] = (font.getTexWidth() - (float) g.getY()) / font.getTexWidth();
-
-		texCoords[i * 12 + 2] = texCoords[i * 12 + 0];
-		texCoords[i * 12 + 3] = (font.getTexWidth() - ((float) g.getY() + (float) g.getHeight())) / font.getTexWidth();
-
-		texCoords[i * 12 + 4] = ((float) g.getX() + (float) g.getWidth()) / font.getTexWidth();
-		texCoords[i * 12 + 5] = texCoords[i * 12 + 1];
-
-		texCoords[i * 12 + 6] = texCoords[i * 12 + 4];
-		texCoords[i * 12 + 7] = texCoords[i * 12 + 1];
-
-		texCoords[i * 12 + 8] = texCoords[i * 12 + 2];
-		texCoords[i * 12 + 9] = texCoords[i * 12 + 3];
-
-		texCoords[i * 12 + 10] = texCoords[i * 12 + 4];
-		texCoords[i * 12 + 11] = texCoords[i * 12 + 3];
+	private void generateTexCoords(int index, Glyph glyph) {
+		
+		texCoordList.add((float) glyph.getX() / font.getTexWidth());
+		texCoordList.add((font.getTexWidth() - (float) glyph.getY()) / font.getTexWidth());
+		
+		texCoordList.add(texCoordList.get(index * 12));
+		texCoordList.add((font.getTexWidth() - ((float) glyph.getY() + (float) glyph.getHeight())) / font.getTexWidth());
+		
+		texCoordList.add(((float) glyph.getX() + (float) glyph.getWidth()) / font.getTexWidth());
+		texCoordList.add(texCoordList.get(index * 12 + 1));
+		
+		texCoordList.add(texCoordList.get(index * 12 + 4));
+		texCoordList.add(texCoordList.get(index * 12 + 1));
+		
+		texCoordList.add(texCoordList.get(index * 12 + 2));
+		texCoordList.add(texCoordList.get(index * 12 + 3));
+		
+		texCoordList.add(texCoordList.get(index * 12 + 4));
+		texCoordList.add(texCoordList.get(index * 12 + 3));
+		
+//		texCoords[index * 12 + 0] = (float) glyph.getX() / font.getTexWidth();
+//		texCoords[index * 12 + 1] = (font.getTexWidth() - (float) glyph.getY()) / font.getTexWidth();
+//
+//		texCoords[index * 12 + 2] = texCoords[index * 12 + 0];
+//		texCoords[index * 12 + 3] = (font.getTexWidth() - ((float) glyph.getY() + (float) glyph.getHeight())) / font.getTexWidth();
+//
+//		texCoords[index * 12 + 4] = ((float) glyph.getX() + (float) glyph.getWidth()) / font.getTexWidth();
+//		texCoords[index * 12 + 5] = texCoords[index * 12 + 1];
+//
+//		texCoords[index * 12 + 6] = texCoords[index * 12 + 4];
+//		texCoords[index * 12 + 7] = texCoords[index * 12 + 1];
+//
+//		texCoords[index * 12 + 8] = texCoords[index * 12 + 2];
+//		texCoords[index * 12 + 9] = texCoords[index * 12 + 3];
+//
+//		texCoords[index * 12 + 10] = texCoords[index * 12 + 4];
+//		texCoords[index * 12 + 11] = texCoords[index * 12 + 3];
 	}
 
 	private void generateVertices(int i, Glyph g) {
-//		System.out.println(g.getY_Offset());
-		vertices[i * 12 + 0] = cursorPosX + g.getX_Offset() * scale;
-		vertices[i * 12 + 1] = cursorPosY - g.getY_Offset() * scale;
+		
+		verticesList.add(cursorPosX + g.getX_Offset() * scale);
+		verticesList.add(cursorPosY - g.getY_Offset() * scale);
+		
+		verticesList.add(cursorPosX + g.getX_Offset() * scale);
+		verticesList.add(cursorPosY - g.getHeight() * scale - g.getY_Offset() * scale);
+		
+		verticesList.add(verticesList.get(i * 12 + 0) + g.getWidth() * scale);
+		verticesList.add(verticesList.get(i * 12 + 1));
+		
+		verticesList.add(verticesList.get(i * 12 + 4));
+		verticesList.add(verticesList.get(i * 12 + 5));
+		
+		verticesList.add(verticesList.get(i * 12 + 2));
+		verticesList.add(verticesList.get(i * 12 + 3));
+		
+		verticesList.add(verticesList.get(i * 12 + 4));
+		verticesList.add(verticesList.get(i * 12 + 3));
 
-		vertices[i * 12 + 2] = cursorPosX + g.getX_Offset() * scale;
-		vertices[i * 12 + 3] = cursorPosY - g.getHeight() * scale - g.getY_Offset() * scale;
-
-		vertices[i * 12 + 4] = vertices[i * 12 + 0] + g.getWidth() * scale;
-		vertices[i * 12 + 5] = vertices[i * 12 + 1];
-
-		vertices[i * 12 + 6] = vertices[i * 12 + 4];
-		vertices[i * 12 + 7] = vertices[i * 12 + 5];
-
-		vertices[i * 12 + 8] = vertices[i * 12 + 2];
-		vertices[i * 12 + 9] = vertices[i * 12 + 3];
-
-		vertices[i * 12 + 10] = vertices[i * 12 + 4];
-		vertices[i * 12 + 11] = vertices[i * 12 + 3];
+//		vertices[i * 12 + 0] = cursorPosX + g.getX_Offset() * scale;
+//		vertices[i * 12 + 1] = cursorPosY - g.getY_Offset() * scale;
+//
+//		vertices[i * 12 + 2] = cursorPosX + g.getX_Offset() * scale;
+//		vertices[i * 12 + 3] = cursorPosY - g.getHeight() * scale - g.getY_Offset() * scale;
+//
+//		vertices[i * 12 + 4] = vertices[i * 12 + 0] + g.getWidth() * scale;
+//		vertices[i * 12 + 5] = vertices[i * 12 + 1];
+//
+//		vertices[i * 12 + 6] = vertices[i * 12 + 4];
+//		vertices[i * 12 + 7] = vertices[i * 12 + 5];
+//
+//		vertices[i * 12 + 8] = vertices[i * 12 + 2];
+//		vertices[i * 12 + 9] = vertices[i * 12 + 3];
+//
+//		vertices[i * 12 + 10] = vertices[i * 12 + 4];
+//		vertices[i * 12 + 11] = vertices[i * 12 + 3];
 
 	}
 
