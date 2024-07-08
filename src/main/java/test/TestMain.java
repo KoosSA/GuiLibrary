@@ -117,8 +117,11 @@ public class TestMain {
 		base.setPosition(100, 100);
 		base.setScrollSpeed(3);
 		
-		Label l1 = new Label(SizeFormat.ABSOLUTE, 210, 30, "My label 1."); 
+		Label l1 = new Label(SizeFormat.ABSOLUTE, 210, 100, "Test label 1."); 
+		l1.setBackgroundColor(0.7f, 0.5f, 0.5f, 0.5f);
 		base.addChild(l1);
+		l1.setTextSize(0);
+		l1.setTextColour(0,1,0,1);
 		
 		GuiElement c1 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c1.setBackgroundColor(0, 1, 0, 1);

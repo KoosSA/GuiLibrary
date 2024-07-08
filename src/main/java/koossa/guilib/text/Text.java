@@ -3,8 +3,10 @@ package koossa.guilib.text;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector4f;
+
+import koossa.guilib.gui.InternalGuiTextureManager;
+import koossa.texturepacker.TextureInfo;
 
 public class Text {
 
@@ -24,6 +26,8 @@ public class Text {
 	
 	private List<Float> verticesList = new ArrayList<Float>();
 	private List<Float> texCoordList = new ArrayList<Float>();
+	private List<Float> colourList = new ArrayList<Float>();
+	private List<Float> dataList = new ArrayList<Float>();
 	private byte[] bytes;
 
 	float[] vertices;
@@ -40,12 +44,6 @@ public class Text {
 		bytes = text.getBytes();
 		createQuads();
 	}
-
-//	public Text(String text, Font font, float posX, float posY, float maxLineLength, float rotZ, float scale) {
-//		this(text, font, posX, posY, maxLineLength);
-//		this.rotZ = rotZ;
-//		this.scale = scale;
-//	}
 	
 	public Text setSize(float size) {
 		if (size == currentSize) {
@@ -73,12 +71,13 @@ public class Text {
 	}
 	
 	private void createQuads() {
-//		vertices = new float[12 * bytes.length];
-//		texCoords = new float[12 * bytes.length];
 		verticesList.clear();
 		texCoordList.clear();
+		colourList.clear();
+		dataList.clear();
+		
 		cursorPosX = posX;
-		cursorPosY = -posY;
+		cursorPosY = posY;
 		for (int index = 0; index < bytes.length; index++) {
 			int b = bytes[index];
 			Glyph glyph = font.getGlyph(b);
@@ -86,7 +85,7 @@ public class Text {
 				if (!multiline) {
 					break;
 				}
-				cursorPosY -= ((font.getLineHeight() * scale) - (font.getPadding() * scale * 2));
+				cursorPosY -= ((font.getLineHeight() * scale) + (font.getPadding() * scale * 2));
 				cursorPosX = posX;
 			}
 
@@ -97,97 +96,53 @@ public class Text {
 				cursorPosX += (glyph.getX_Advance() * scale - (font.getPadding() * scale * 2));
 			}
 		}
-		
-		vertices = ArrayUtils.toPrimitive(verticesList.toArray(new Float[0]));
-		texCoords = ArrayUtils.toPrimitive(texCoordList.toArray(new Float[0]));
-		
+	}
+
+	private void generateColoursAndData() {
+		colourList.add(colour.x);
+		colourList.add(colour.y);
+		colourList.add(colour.z);
+		colourList.add(colour.w);
+		dataList.add(1.0f);
 	}
 
 	private void generateTexCoords(int index, Glyph glyph) {
+		TextureInfo info = InternalGuiTextureManager.getTexInfo(font.getTextureName());
+		float layer = (info == null) ? -1.0f : InternalGuiTextureManager.getAtlasLayer(info.getAtlasName());
 		
 		texCoordList.add((float) glyph.getX() / font.getTexWidth());
 		texCoordList.add((font.getTexWidth() - (float) glyph.getY()) / font.getTexWidth());
+		texCoordList.add(layer);
+		generateColoursAndData();
 		
-		texCoordList.add(texCoordList.get(index * 12));
+		texCoordList.add((float) glyph.getX() / font.getTexWidth());
 		texCoordList.add((font.getTexWidth() - ((float) glyph.getY() + (float) glyph.getHeight())) / font.getTexWidth());
+		texCoordList.add(layer);
+		generateColoursAndData();
 		
 		texCoordList.add(((float) glyph.getX() + (float) glyph.getWidth()) / font.getTexWidth());
-		texCoordList.add(texCoordList.get(index * 12 + 1));
+		texCoordList.add((font.getTexWidth() - ((float) glyph.getY() + (float) glyph.getHeight())) / font.getTexWidth());
+		texCoordList.add(layer);
+		generateColoursAndData();
 		
-		texCoordList.add(texCoordList.get(index * 12 + 4));
-		texCoordList.add(texCoordList.get(index * 12 + 1));
-		
-		texCoordList.add(texCoordList.get(index * 12 + 2));
-		texCoordList.add(texCoordList.get(index * 12 + 3));
-		
-		texCoordList.add(texCoordList.get(index * 12 + 4));
-		texCoordList.add(texCoordList.get(index * 12 + 3));
-		
-//		texCoords[index * 12 + 0] = (float) glyph.getX() / font.getTexWidth();
-//		texCoords[index * 12 + 1] = (font.getTexWidth() - (float) glyph.getY()) / font.getTexWidth();
-//
-//		texCoords[index * 12 + 2] = texCoords[index * 12 + 0];
-//		texCoords[index * 12 + 3] = (font.getTexWidth() - ((float) glyph.getY() + (float) glyph.getHeight())) / font.getTexWidth();
-//
-//		texCoords[index * 12 + 4] = ((float) glyph.getX() + (float) glyph.getWidth()) / font.getTexWidth();
-//		texCoords[index * 12 + 5] = texCoords[index * 12 + 1];
-//
-//		texCoords[index * 12 + 6] = texCoords[index * 12 + 4];
-//		texCoords[index * 12 + 7] = texCoords[index * 12 + 1];
-//
-//		texCoords[index * 12 + 8] = texCoords[index * 12 + 2];
-//		texCoords[index * 12 + 9] = texCoords[index * 12 + 3];
-//
-//		texCoords[index * 12 + 10] = texCoords[index * 12 + 4];
-//		texCoords[index * 12 + 11] = texCoords[index * 12 + 3];
+		texCoordList.add(((float) glyph.getX() + (float) glyph.getWidth()) / font.getTexWidth());
+		texCoordList.add((font.getTexWidth() - (float) glyph.getY()) / font.getTexWidth());
+		texCoordList.add(layer);
+		generateColoursAndData();
 	}
 
 	private void generateVertices(int i, Glyph g) {
+		verticesList.add(cursorPosX - g.getX_Offset() * scale);
+		verticesList.add(cursorPosY + g.getY_Offset() * scale);
 		
-		verticesList.add(cursorPosX + g.getX_Offset() * scale);
-		verticesList.add(cursorPosY - g.getY_Offset() * scale);
+		verticesList.add(cursorPosX - g.getX_Offset() * scale);
+		verticesList.add(cursorPosY + g.getHeight() * scale + g.getY_Offset() * scale);
 		
-		verticesList.add(cursorPosX + g.getX_Offset() * scale);
-		verticesList.add(cursorPosY - g.getHeight() * scale - g.getY_Offset() * scale);
+		verticesList.add(cursorPosX + g.getX_Offset() * scale + g.getWidth() * scale);
+		verticesList.add(cursorPosY + g.getHeight() * scale + g.getY_Offset() * scale);
 		
-		verticesList.add(verticesList.get(i * 12 + 0) + g.getWidth() * scale);
-		verticesList.add(verticesList.get(i * 12 + 1));
-		
-		verticesList.add(verticesList.get(i * 12 + 4));
-		verticesList.add(verticesList.get(i * 12 + 5));
-		
-		verticesList.add(verticesList.get(i * 12 + 2));
-		verticesList.add(verticesList.get(i * 12 + 3));
-		
-		verticesList.add(verticesList.get(i * 12 + 4));
-		verticesList.add(verticesList.get(i * 12 + 3));
-
-//		vertices[i * 12 + 0] = cursorPosX + g.getX_Offset() * scale;
-//		vertices[i * 12 + 1] = cursorPosY - g.getY_Offset() * scale;
-//
-//		vertices[i * 12 + 2] = cursorPosX + g.getX_Offset() * scale;
-//		vertices[i * 12 + 3] = cursorPosY - g.getHeight() * scale - g.getY_Offset() * scale;
-//
-//		vertices[i * 12 + 4] = vertices[i * 12 + 0] + g.getWidth() * scale;
-//		vertices[i * 12 + 5] = vertices[i * 12 + 1];
-//
-//		vertices[i * 12 + 6] = vertices[i * 12 + 4];
-//		vertices[i * 12 + 7] = vertices[i * 12 + 5];
-//
-//		vertices[i * 12 + 8] = vertices[i * 12 + 2];
-//		vertices[i * 12 + 9] = vertices[i * 12 + 3];
-//
-//		vertices[i * 12 + 10] = vertices[i * 12 + 4];
-//		vertices[i * 12 + 11] = vertices[i * 12 + 3];
-
-	}
-
-	public float[] getVertices() {
-		return vertices;
-	}
-
-	public float[] getTexCoords() {
-		return texCoords;
+		verticesList.add(cursorPosX + g.getX_Offset() * scale + g.getWidth() * scale);
+		verticesList.add(cursorPosY + g.getY_Offset() * scale);
 	}
 
 	public Text setColour(float r, float g, float b, float a) {
@@ -201,6 +156,27 @@ public class Text {
 	
 	public float getSize() {
 		return currentSize;
+	}
+
+	public List<Float> getVerticesList() {
+		return verticesList;
+	}
+
+	public List<Float> getTexCoordList() {
+		return texCoordList;
+	}
+	
+	public Font getFont() {
+		return font;
+	}
+
+	public List<Float> getColourList() {
+		return colourList;
+	}
+
+	public List<Float> getDataList() {
+		return dataList;
+		
 	}
 
 }

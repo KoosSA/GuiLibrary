@@ -12,13 +12,8 @@ public class RenderBatch {
 	private float[] textureCoords;
 	/** 4 floats **/
 	private float[] colors;
-	
-//	public void updateData(List<Float> verticesList) {
-//		vertices = new float[verticesList.size()];
-//		for (int i = 0; i < verticesList.size(); i++) {
-//			vertices[i] = verticesList.get(i);
-//		}
-//	}
+	/** 1 float **/
+	private float[] data;
 	
 	public void updateVertices(List<Float> verticesList) {
 		vertices = new float[verticesList.size()];
@@ -47,6 +42,13 @@ public class RenderBatch {
 			colors[i] = colorList.get(i);
 		}
 	}
+	
+	public void updateData(List<Float> dataList) {
+		data = new float[dataList.size()];
+		for (int i = 0; i < dataList.size(); i++) {
+			data[i] = dataList.get(i);
+		}
+	}
 
 	public float[] getColors() {
 		return colors;
@@ -63,4 +65,10 @@ public class RenderBatch {
 	public float[] getVertices() {
 		return vertices;
 	}
+	
+	public float[] getData() {
+		return data;
+	}
+
+	
 }

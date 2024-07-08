@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import koossa.guilib.elements.GuiElement;
+import koossa.guilib.elements.utils.ITextElement;
 import koossa.guilib.gui.InternalGuiTextureManager;
 import koossa.texturepacker.TextureInfo;
 
@@ -28,6 +29,24 @@ public class RenderUtils {
 		tempFloatList.clear();
 		addColor(parentElement, tempFloatList);
 		batch.updateColors(tempFloatList);
+		
+		tempFloatList.clear();
+		addData(parentElement, tempFloatList);
+		batch.updateData(tempFloatList);
+	}
+
+	private static void addData(GuiElement element, List<Float> dataList) {
+		for (int i = 0; i < 4; i++) {
+			dataList.add(0.0f);
+		}
+		if (element instanceof ITextElement) {
+			dataList.addAll(((ITextElement) element).getDataList());
+		}
+		if (element.getChildren() != null) {
+			element.getChildren().forEach(e -> {
+				if (e.isInBounds()) addData(e, dataList);
+			});
+		}
 	}
 
 	private static void addColor(GuiElement element, List<Float> colorList) {
@@ -36,6 +55,9 @@ public class RenderUtils {
 			colorList.add(element.getBackgroundColor().y());
 			colorList.add(element.getBackgroundColor().z());
 			colorList.add(element.getBackgroundColor().w());
+		}
+		if (element instanceof ITextElement) {
+			colorList.addAll(((ITextElement) element).getTextColourList());
 		}
 		if (element.getChildren() != null) {
 			element.getChildren().forEach(e -> {
@@ -53,6 +75,9 @@ public class RenderUtils {
 		verticesList.add((float) element.getHeight() + element.getPosY());
 		verticesList.add((float) element.getWidth() + element.getPosX());
 		verticesList.add(0.000f + element.getPosY());
+		if (element instanceof ITextElement) {
+			verticesList.addAll(((ITextElement) element).getTextVertices());
+		}
 		if (element.getChildren() != null) {
 			element.getChildren().forEach(e -> {
 				if (e.isInBounds()) addVertices(e, verticesList);
@@ -66,37 +91,22 @@ public class RenderUtils {
 		texCoordList.add((info == null) ? 0.0f : info.getTexCoordX1());
 		texCoordList.add((info == null) ? 0.0f : info.getTexCoordY1());
 		texCoordList.add(layer);
-		
 		texCoordList.add((info == null) ? 0.0f : info.getTexCoordX1());
 		texCoordList.add((info == null) ? 0.0f : info.getTexCoordY2());
 		texCoordList.add(layer);
-		
-		
 		texCoordList.add((info == null) ? 0.0f : info.getTexCoordX2());
 		texCoordList.add((info == null) ? 0.0f : info.getTexCoordY2());
 		texCoordList.add(layer);
-		
-		
 		texCoordList.add((info == null) ? 0.0f : info.getTexCoordX2());
 		texCoordList.add((info == null) ? 0.0f : info.getTexCoordY1());
 		texCoordList.add(layer);
-		
-		
+		if (element instanceof ITextElement) {
+			texCoordList.addAll(((ITextElement) element).getTextTextureCoords());
+		}
 		if (element.getChildren() != null) {
 			element.getChildren().forEach(e -> {
 				if (e.isInBounds()) addTexCoords(e, texCoordList);
 			});
-		}
-	}
-
-	private static void addIndices(int numElements, List<Integer> indicesList) {
-		for (int i = 0; i < numElements; i++) {
-			indicesList.add(0 + (i * 4));
-			indicesList.add(1 + (i * 4));
-			indicesList.add(2 + (i * 4));
-			indicesList.add(0 + (i * 4));
-			indicesList.add(2 + (i * 4));
-			indicesList.add(3 + (i * 4));
 		}
 	}
 

@@ -5,6 +5,8 @@ public enum BufferLocations {
 	VERTEX_BUFFER,
 	TEXTURECOORD_BUFFER,
 	COLOR_BUFFER, 
+	DATA_BUFFER,
 	INDEX_BUFFER //Index buffer must always be last in list.
+
 
 }

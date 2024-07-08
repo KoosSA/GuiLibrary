@@ -62,13 +62,14 @@ public class InternalGuiTextureManager {
 		GL45.glTexStorage3D(GL30.GL_TEXTURE_2D_ARRAY, 1, GL30.GL_RGBA8, 1024, 1024, imgFiles.length);
 		
 		int[] w = new int[1], h = new int[1], c = new int[1];
+		STBImage.stbi_set_flip_vertically_on_load(true);
 		for (int i = 0; i < imgFiles.length; i++) {
 			String name = folder + "/" + imgFiles[i];
 			atlasLayer.put(imgFiles[i], i);
-			STBImage.stbi_set_flip_vertically_on_load(true);
 			ByteBuffer pixels = STBImage.stbi_load(name, w, h, c, STBImage.STBI_rgb_alpha);
-			GL45.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, imgFiles.length, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, pixels);
+			GL45.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, 1024, 1024, 1, GL30.GL_RGBA, GL30.GL_UNSIGNED_BYTE, pixels);
 			STBImage.stbi_image_free(pixels);
+			Log.debug(this, "Texture atlas " + imgFiles[i] + ", loaded on layer " + i);
 		}
 		GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_NEAREST_MIPMAP_NEAREST);
 		GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_NEAREST);

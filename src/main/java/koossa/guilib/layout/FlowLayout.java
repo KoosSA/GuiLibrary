@@ -40,7 +40,5 @@ class FlowLayout implements ILayout {
 		}
 		
 	}
-	
-	
 
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import com.koossa.logger.Log;
@@ -36,6 +37,9 @@ public class GuiRenderer {
 	
 	public void render(RenderBatch batch) {
 		GL30.glDisable(GL30.GL_DEPTH_TEST);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glEnable(GL30.GL_BLEND);
+		
 		
 		shader.start();
 		GL30.glBindVertexArray(vao);
@@ -69,6 +73,8 @@ public class GuiRenderer {
 		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, batch.getTextureCoords(), GL30.GL_DYNAMIC_DRAW);
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbos.get(BufferLocations.COLOR_BUFFER));
 		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, batch.getColors(), GL30.GL_DYNAMIC_DRAW);
+		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, vbos.get(BufferLocations.DATA_BUFFER));
+		GL30.glBufferData(GL30.GL_ARRAY_BUFFER, batch.getData(), GL30.GL_DYNAMIC_DRAW);
 		GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, 0);
 		GL30.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, vbos.get(BufferLocations.INDEX_BUFFER));
 		GL30.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, batch.getIndices(), GL30.GL_DYNAMIC_DRAW);
@@ -88,6 +94,7 @@ public class GuiRenderer {
 		createBuffer(BufferLocations.VERTEX_BUFFER, 2);
 		createBuffer(BufferLocations.TEXTURECOORD_BUFFER, 3);
 		createBuffer(BufferLocations.COLOR_BUFFER, 4);
+		createBuffer(BufferLocations.DATA_BUFFER, 1);
 		createIndicesBuffer(BufferLocations.INDEX_BUFFER);
 		GL30.glBindVertexArray(0);
 	}

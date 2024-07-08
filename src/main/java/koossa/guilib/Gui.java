@@ -12,7 +12,6 @@ import koossa.guilib.elements.GuiElement;
 import koossa.guilib.gui.GuiManager;
 import koossa.guilib.text.Font;
 import koossa.guilib.text.FontLibrary;
-import koossa.guilib.text.TextManager;
 import koossa.texturepacker.AtlasSizes;
 import koossa.texturepacker.TexturePacker;
 
@@ -26,7 +25,6 @@ public class Gui {
 		Gui.screenHeight = screenHeight;
 		Gui.screenWidth = screenWidth;
 		guiManager = new GuiManager();
-		TextManager.init();
 		Log.info(Gui.class, "Max number of layers of textures supported: " + GL30.glGetInteger(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS));
 		FontLibrary.addFont("DEFAULT_FONT", new Font("c.fnt"));
 		initialised = true;
@@ -43,7 +41,6 @@ public class Gui {
 	}
 	
 	public static void dispose() {
-		TextManager.dispose();
 		guiManager.dispose();
 		Log.debug(Gui.class, "Disposing gui library");
 		initialised = false;
@@ -52,13 +49,11 @@ public class Gui {
 	public static void resize(int width, int height) {
 		Gui.screenHeight = (float) height;
 		Gui.screenWidth = (float) width;
-		TextManager.onResize(width, height);
 		guiManager.resize(width, height);
 	}
 	
 	public static void render() {
 		guiManager.render();
-		TextManager.render();
 	}
 	
 	public static float getScreenHeight() {
