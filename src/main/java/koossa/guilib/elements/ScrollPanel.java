@@ -13,8 +13,8 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 	
 	private IGuiEvent onHoverStart, onHoverEnd, onInteract;
 	private boolean hovering = false;
-	private int scrollSpeed = 2;
-	private boolean smoothScrolling = false;
+	private int scrollSpeed = 5;
+	private boolean smoothScrolling = true;
 	
 	public ScrollPanel(SizeFormat sizeFormat, float width, float height, Layouts layout) {
 		super(sizeFormat, width, height, layout);
@@ -45,7 +45,7 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 		}
 		if (hovering && input.getScrollYOffset() != 0) {
 			childYOffset += (input.getScrollYOffset() * scrollSpeed);
-			childYOffset = Math.clamp(-getChildren().getLast().getPosY() + getChildren().getLast().getHeight() + getPadding(), 0, childYOffset);
+			childYOffset = Math.clamp(-sumChildHeights()-getPadding()+getHeight() , 0, childYOffset);
 			recalculateLayout();
 			setDirty(true);
 		}
@@ -66,11 +66,28 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 	private int getChildMaxHeight() {
 		int max = 0;
 		for (int i = 0; i < getChildren().size(); i++ ) {
-			if (getChildren().get(i).getHeight() > max) {
+			if (getChildren().get(i).getHeight() > max && getChildren().get(i).isInBounds()) {
 				max = getChildren().get(i).getHeight();
 			}
 		}
 		return max;
+	}
+	
+	private int sumChildHeights() {
+		int sum = 0;
+		int rowMax = 0;
+		int y = 0;
+		
+		for (int i = 0; i < getChildren().size(); i++ ) {
+			rowMax = (getChildren().get(i).getHeight() > rowMax) ? getChildren().get(i).getHeight() : rowMax;
+			if (y != getChildren().get(i).getPosY()) {
+				sum += getSpacing();
+				y = getChildren().get(i).getPosY();
+				sum += rowMax;
+				rowMax = 0;
+			} 
+		}
+		return sum;
 	}
 
 	

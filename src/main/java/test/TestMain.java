@@ -115,9 +115,9 @@ public class TestMain {
 
 		ScrollPanel base = new ScrollPanel(SizeFormat.ABSOLUTE, 230, 230, Layouts.FLOW_LAYOUT);
 		base.setPosition(100, 100);
-		base.setScrollSpeed(3);
+		base.setScrollSpeed(5);
 		
-		Label l1 = new Label(SizeFormat.ABSOLUTE, 210, 100, "Test label 1."); 
+		Label l1 = new Label(SizeFormat.ABSOLUTE, 210, 30, "Test label 1."); 
 		l1.setBackgroundColor(0.7f, 0.5f, 0.5f, 0.5f);
 		base.addChild(l1);
 		l1.setTextSize(0);
