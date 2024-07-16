@@ -70,6 +70,12 @@ public class Text {
 		return this;
 	}
 	
+	public void setText(String text) {
+		this.text = text;
+		bytes = text.getBytes();
+		createQuads();
+	}
+	
 	private void createQuads() {
 		verticesList.clear();
 		texCoordList.clear();

@@ -31,9 +31,7 @@ class FlowLayout implements ILayout {
 				child.setPosX(cursorX);
 				child.setPosY(cursorY);
 			}
-//			if (! child.isInBounds()) {
-//				Log.debug(this, "Gui element: " + child + " is not in bounds of parent. Will not be displayed or updated.");
-//			}
+			
 			//Advances the X cursor
 			cursorX  += child.getWidth() + element.getSpacing();
 			prevMaxHeight = Math.max(prevMaxHeight, child.getHeight());

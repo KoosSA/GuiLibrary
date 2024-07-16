@@ -7,6 +7,7 @@ import org.joml.Math;
 import org.joml.Vector4f;
 
 import koossa.guilib.Gui;
+import koossa.guilib.elements.utils.GuiRow;
 import koossa.guilib.layout.ILayout;
 import koossa.guilib.layout.Layouts;
 import koossa.guilib.layout.SizeFormat;
@@ -24,6 +25,8 @@ public class GuiElement {
 	private boolean dirty = false;
 	private String textureName;
 	protected int childYOffset = 0;
+	private List<GuiRow> rows = new ArrayList<GuiRow>();
+	private List<GuiRow> rowsInBounds = new ArrayList<GuiRow>();
 	
 	public GuiElement(SizeFormat sizeFormat, float width, float height, Layouts layout) {
 		this.layout = layout.getValue();
@@ -42,7 +45,7 @@ public class GuiElement {
 		child.height = (int) ((child.sizeFormat == SizeFormat.RELATIVE) ? (height * child.relativeHeight) : child.height);
 //		child.width = (int) (width * child.relativeWidth);
 //		child.height = (int) (height * child.relativeHeight);
-		layout.applyLayout(this, children, 0);
+		recalculateLayout();
 	}
 	
 	public void update() {
@@ -72,14 +75,47 @@ public class GuiElement {
 		if (parent == null) {
 			return true;
 		}
-		if (posX >= parent.posX && posY >= parent.posY && posX+width <= parent.posX+parent.width && posY+height <= parent.posY+parent.height) {
+		if (posX >= parent.posX && posY >= parent.posY + parent.padding && posX+width <= parent.posX+parent.width && posY+height <= parent.posY+parent.height-parent.padding) {
 			return true;
 		}
-		//FIXME SET TO FaLSE WHEN DONE
-		return true;
+		return false;
 	}
 	
+	private void updateRows() {
+		if (children.size() <= 0) {
+			return;
+		}
+		rows.clear();
+		int prevY = -999, prevHeight = -999;
+		int currentRowIndex = -1;
+		for (int i = 0; i < children.size(); i++) {
+			GuiElement child = children.get(i);
+			if (child.getPosY() > prevY) {
+				GuiRow row = new GuiRow(child.getPosX(), child.getPosY(), child.getHeight());
+				rows.add(row);
+				currentRowIndex++;
+				prevY = child.getPosY();
+				prevHeight = child.getHeight();
+			} else {
+				GuiRow row = rows.get(currentRowIndex);
+				row.setHeight(Math.max(prevHeight, child.getHeight()));
+			}
+		}
+	}
 	
+	private void updateRowsInBounds() {
+		rowsInBounds.clear();
+		for (int i = 0; i < rows.size(); i++) {
+			GuiRow row = rows.get(i);
+			if (row.getY() >= posY + padding && row.getY() + row.getHeight() <= posY + height) {
+				rowsInBounds.add(row);
+			}
+		}
+	}
+	
+	protected List<GuiRow> getRowsInBound(){
+		return rowsInBounds;
+	}
 	
 	
 	
@@ -189,6 +225,8 @@ public class GuiElement {
 	public void recalculateLayout() {
 		layout.applyLayout(this, children, childYOffset);
 		children.forEach(c -> c.recalculateLayout());
+		updateRows();
+		updateRowsInBounds();
 	}
 	
 }

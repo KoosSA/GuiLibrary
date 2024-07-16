@@ -94,8 +94,15 @@ public class TestMain {
 				.setColour(0, 0, 0, 1);
 		//TextManager.addTextToRender(text);
 		
+		Label l1 = new Label(SizeFormat.ABSOLUTE, 210, 30, "Test label gh."); 
+		l1.setBackgroundColor(0.7f, 0.5f, 0.5f, 0.5f);
+		l1.setTextSize(20);
+		l1.setTextColour(0,1,0,1);
 		
 		IInputHandler ih = new IInputHandler() {
+			
+			Random random = new Random();
+			
 			@Override
 			public void handleInput(InputManager input) {
 				if (input.isFunctionKeyJustPressed("OPEN_INVENTORY")) {
@@ -104,8 +111,8 @@ public class TestMain {
 				if (input.isFunctionKeyDown("DOWN")) {
 					text.setSize(text.getSize() - 1);
 				}
-				if (input.isFunctionKeyDown("UP")) {
-					text.setSize(text.getSize() + 1);
+				if (input.isFunctionKeyJustPressed("UP")) {
+					l1.setText("Random Number: " + random.nextInt(100));
 				}
 			}
 		};
@@ -117,11 +124,21 @@ public class TestMain {
 		base.setPosition(100, 100);
 		base.setScrollSpeed(5);
 		
-		Label l1 = new Label(SizeFormat.ABSOLUTE, 210, 30, "Test label 1."); 
-		l1.setBackgroundColor(0.7f, 0.5f, 0.5f, 0.5f);
+		
 		base.addChild(l1);
-		l1.setTextSize(0);
-		l1.setTextColour(0,1,0,1);
+		
+		
+		Label l2 = new Label(SizeFormat.ABSOLUTE, 210, 30, "Test label 2."); 
+		l2.setBackgroundColor(0.7f, 0.5f, 0.5f, 0.5f);
+		base.addChild(l2);
+		l2.setTextSize(0);
+		l2.setTextColour(0,1,0,1);
+		
+		Label l3 = new Label(SizeFormat.ABSOLUTE, 210, 30, "Test label 2."); 
+		//l3.setBackgroundColor(0.7f, 0.5f, 0.5f, 0.5f);
+		base.addChild(l3);
+		l3.setTextSize(0);
+		l3.setTextColour(0,1,0,1);
 		
 		GuiElement c1 = new GuiElement(SizeFormat.ABSOLUTE, 100, 100, Layouts.FLOW_LAYOUT);
 		c1.setBackgroundColor(0, 1, 0, 1);
@@ -159,11 +176,11 @@ public class TestMain {
 		c5.setTextureName("square.png");
 		base.addChild(c5);
 
-		GuiElement c11 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, Layouts.FLOW_LAYOUT);
-		c1.addChild(c11);
-		GuiElement c12 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, Layouts.FLOW_LAYOUT);
-		c1.addChild(c12);
-		c12.setTextureName("triangle.png");
+//		GuiElement c11 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, Layouts.FLOW_LAYOUT);
+//		c1.addChild(c11);
+//		GuiElement c12 = new GuiElement(SizeFormat.RELATIVE, 0.4f, 0.4f, Layouts.FLOW_LAYOUT);
+//		c1.addChild(c12);
+//		c12.setTextureName("triangle.png");
 		c1.setPadding(10);
 		c1.setSpacing(10);
 

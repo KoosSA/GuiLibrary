@@ -14,7 +14,7 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 	private IGuiEvent onHoverStart, onHoverEnd, onInteract;
 	private boolean hovering = false;
 	private int scrollSpeed = 5;
-	private boolean smoothScrolling = true;
+	private boolean smoothScrolling = false;
 	
 	public ScrollPanel(SizeFormat sizeFormat, float width, float height, Layouts layout) {
 		super(sizeFormat, width, height, layout);
@@ -44,6 +44,17 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 			onInteract.handleGuiEvent(this);
 		}
 		if (hovering && input.getScrollYOffset() != 0) {
+			if (!smoothScrolling) {
+				try {
+					if (input.getScrollYOffset() > 0) {
+						scrollSpeed = getRowsInBound().getLast().getHeight() + getPadding();
+					} else {
+						scrollSpeed = getRowsInBound().getFirst().getHeight() + getPadding();
+					}
+				} catch (Exception e) {
+					scrollSpeed = 0;
+				}
+			}
 			childYOffset += (input.getScrollYOffset() * scrollSpeed);
 			childYOffset = Math.clamp(-sumChildHeights()-getPadding()+getHeight() , 0, childYOffset);
 			recalculateLayout();
@@ -54,9 +65,13 @@ public class ScrollPanel extends GuiElement implements IInputHandler {
 	@Override
 	public void recalculateLayout() {
 		super.recalculateLayout();
-		if (!smoothScrolling) {
-			scrollSpeed = getChildMaxHeight() + getPadding();
-		}
+//		if (!smoothScrolling) {
+//			try {
+//				scrollSpeed = getRowsInBound().getFirst().getHeight() + getPadding();
+//			} catch (Exception e) {
+//				scrollSpeed = 0;
+//			}
+//		}
 	}
 	
 	public void setScrollSpeed(int scrollSpeed) {
