@@ -2,6 +2,7 @@ package test;
 
 import org.joml.Random;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWCharCallbackI;
 import org.lwjgl.glfw.GLFWCursorPosCallbackI;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
 import org.lwjgl.glfw.GLFWMouseButtonCallbackI;
@@ -21,6 +22,7 @@ import koossa.guilib.elements.Button;
 import koossa.guilib.elements.GuiElement;
 import koossa.guilib.elements.Label;
 import koossa.guilib.elements.ScrollPanel;
+import koossa.guilib.elements.TextField;
 import koossa.guilib.elements.utils.IGuiEvent;
 import koossa.guilib.layout.Layouts;
 import koossa.guilib.layout.SizeFormat;
@@ -63,6 +65,13 @@ public class TestMain {
 					Input.addKeyReleasedEvent(key);
 			}
 		});
+		
+		GLFW.glfwSetCharCallback(winId, new GLFWCharCallbackI() {
+			@Override
+			public void invoke(long window, int codepoint) {
+				Input.addCharPressEvent(codepoint);
+			}
+		});
 
 		GLFW.glfwSetCursorPosCallback(winId, new GLFWCursorPosCallbackI() {
 			@Override
@@ -87,6 +96,7 @@ public class TestMain {
 		Input.setKeyBinding("UP", GLFW.GLFW_KEY_UP);
 		Input.setKeyBinding("DOWN", GLFW.GLFW_KEY_DOWN);
 		Input.setMouseBinding("CLICK_PRIMARY", GLFW.GLFW_MOUSE_BUTTON_1);
+		Input.setKeyBinding("GUI_BACKSPACE", GLFW.GLFW_KEY_BACKSPACE);
 
 		Gui.initWithUnstitchedTextures(800, 600);
 		
@@ -134,7 +144,7 @@ public class TestMain {
 		l2.setTextSize(0);
 		l2.setTextColour(0,1,0,1);
 		
-		Label l3 = new Label(SizeFormat.ABSOLUTE, 210, 30, "Test label 2."); 
+		TextField l3 = new TextField(SizeFormat.ABSOLUTE, 210, 30, "TextField"); 
 		//l3.setBackgroundColor(0.7f, 0.5f, 0.5f, 0.5f);
 		base.addChild(l3);
 		l3.setTextSize(0);

@@ -76,6 +76,11 @@ public class Text {
 		createQuads();
 	}
 	
+	public void setTextBytes(byte[] bytes) {
+		String s = new String(bytes);
+		setText(s);
+	}
+
 	private void createQuads() {
 		verticesList.clear();
 		texCoordList.clear();

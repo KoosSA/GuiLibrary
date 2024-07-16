@@ -16,6 +16,7 @@ public class GuiManager {
 	private Map<String, GuiElement> visibleGuis = new HashMap<String, GuiElement>();
 	private Map<String, RenderBatch> renderBatches = new HashMap<String, RenderBatch>();
 	private InternalGuiTextureManager textureManager = new InternalGuiTextureManager();
+	private static boolean textInputEnabled = false;
 
 	public void loadTextureAtlases(File atlasFolder, String atlasPrefix) {
 		int texID = textureManager.loadTextureAtlasses(atlasFolder, atlasPrefix);
@@ -62,12 +63,16 @@ public class GuiManager {
 	}
 
 	public int hide(String id) {
-		visibleGuis.remove(id);
+		if (!textInputEnabled) {
+			visibleGuis.remove(id);
+		}
 		return visibleGuis.size();
 	}
 
 	public void hideAll() {
-		visibleGuis.clear();
+		if (!textInputEnabled) {
+			visibleGuis.clear();
+		}
 	}
 
 	public int toggleGui(String id) {
@@ -77,6 +82,10 @@ public class GuiManager {
 			show(id);
 		}
 		return visibleGuis.size();
+	}
+	
+	public static void setTextInputEnabled(boolean textInputEnabled) {
+		GuiManager.textInputEnabled = textInputEnabled;
 	}
 
 }
