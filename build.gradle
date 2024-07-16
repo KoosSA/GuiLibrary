@@ -14,7 +14,7 @@ project.ext {
 	lwjglNatives = "natives-windows"
 	filesystem = "latest.release"
 	savesystem = "latest.release"
-	inputlib = "1.0.3"
+	inputlib = "1.0.4"
 	loglib = "latest.release"
 	texpacker = "latest.release"
 }
